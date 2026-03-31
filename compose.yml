@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:18-alpine
+    container_name: sprintmont_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - sprintmont_net
+
+  bucket:
+    image: chrislusf/seaweedfs
+    container_name: sprintmont_bkt
+    restart: unless-stopped
+    ports:
+      - "8333:8333"
+      - "8888:8888"
+    command: "server -s3 -filer -master.volumeSizeLimitMB=1024 -volume.max=100 -s3.config=/etc/seaweedfs/s3_config.json"
+    volumes:
+      - seaweed_data:/data
+      - ./seaweedfs_config/s3_config.json:/etc/seaweedfs/s3_config.json
+    networks:
+      - sprintmont_net
+
+volumes:
+  pg_data:
+  seaweed_data:
+
+networks:
+  sprintmont_net:
+    driver: bridge
