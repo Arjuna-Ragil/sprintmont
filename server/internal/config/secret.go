@@ -1,4 +1,4 @@
-package internal
+package config
 
 import (
 	"fmt"
@@ -11,6 +11,8 @@ type Config struct {
 	Bkt_Endpoint string
 	Bkt_Access string
 	Bkt_Password string
+	Redis_Endpoint string
+	Redis_Password string
 	Port   string
 	DBURL  string
 }
@@ -26,10 +28,12 @@ func LoadConfig() Config {
 		Bkt_Endpoint: getEnv("BUCKET_ENDPOINT", "127.0.0.1:8335"),
 		Bkt_Access: getEnv("BUCKET_ACCESS_KEY", "admin"),
 		Bkt_Password: getEnv("BUCKET_SECRET_KEY", "admin"),
+		Redis_Endpoint: getEnv("REDIS_HOST", "localhost") + ":" + getEnv("REDIS_PORT", "6379"),
+		Redis_Password: getEnv("REDIS_PASSWORD", "admin"),
 		DBURL: "host=" + getEnv("DB_HOST", "localhost") +
 			" user=" + getEnv("DB_USER", "postgres") +
-			" password=" + getEnv("DB_PASSWORD", "password") +
-			" dbname=" + getEnv("DB_NAME", "Porto_DB") +
+			" password=" + getEnv("DB_PASSWORD", "postgres") +
+			" dbname=" + getEnv("DB_NAME", "Sprintmont_DB") +
 			" port=" + getEnv("DB_PORT", "5432") +
 			" sslmode=disable TimeZone=Asia/Jakarta",
 	}

@@ -1,29 +1,28 @@
-package database
+package config
 
 import (
 	"log"
 
-	"github.com/Arjuna-Ragil/sprintmont/internal"
 	"github.com/Arjuna-Ragil/sprintmont/internal/core/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 type DB struct {
-	gorm *gorm.DB
+	Gorm *gorm.DB
 }
 
-func ConnectDB(cfg *internal.Config) (*DB, error){
+func ConnectDB(cfg *Config) (*DB, error){
 	gormDB, err := gorm.Open(postgres.Open(cfg.DBURL), &gorm.Config{}); if err != nil {
 		log.Fatalf("Connection to DB Failed: %v", err)
 	}
 	log.Printf("Connected to DB")
 
-	return &DB{gorm: gormDB}, nil
+	return &DB{Gorm: gormDB}, nil
 }
 
 func (db *DB) MigrateDB() error {
-	err := db.gorm.AutoMigrate(
+	err := db.Gorm.AutoMigrate(
 		&models.User{},
 		&models.ProjectUser{},
 		&models.Project{},

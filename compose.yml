@@ -12,6 +12,16 @@ services:
     networks:
       - sprintmont_net
 
+  redis:
+    image: redis:alpine
+    container_name: sprintmont_cache
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    networks:
+      - sprintmont_net
+
   bucket:
     image: chrislusf/seaweedfs
     container_name: sprintmont_bkt
@@ -28,6 +38,7 @@ services:
 
 volumes:
   pg_data:
+  redis_data:
   seaweed_data:
 
 networks:
