@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Stage, Layer, Rect, Circle, Text } from "react-konva";
 import { Pointer, Hand, Square, Circle as CircleIcon, Type } from "lucide-react";
 import Konva from "konva";
+import { useParams } from "next/navigation";
 
 type ToolType = "pointer" | "hand" | "rectangle" | "circle" | "text";
 
@@ -25,9 +26,71 @@ export default function CanvasBoard() {
   const [isDrawing, setIsDrawing] = useState(false);
   const stageRef = useRef<Konva.Stage>(null);
   
+  // Use a ref to ensure event handlers have the very latest items without re-subscribing.
+  const itemsRef = useRef(items);
+  useEffect(() => {
+    itemsRef.current = items;
+  }, [items]);
+
   // Dimensions
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Router dynamics
+  const params = useParams();
+  const projectId = params?.projectid as string;
+  const wsRef = useRef<WebSocket | null>(null);
+
+  // Initialization & WebSocket Setup
+  useEffect(() => {
+    if (!projectId) return;
+
+    // Fetch initial state first from the DB
+    fetch(`http://localhost:8080/api/canvas/${projectId}`)
+      .then(res => res.json())
+      .then(resData => {
+        if (resData?.data?.elements) {
+          let parsed = [];
+          if (typeof resData.data.elements === "string" && resData.data.elements.length > 0) {
+            try { parsed = JSON.parse(resData.data.elements); } catch (e) {}
+          } else if (Array.isArray(resData.data.elements)) {
+            parsed = resData.data.elements;
+          }
+          if (parsed.length > 0) {
+             setItems(parsed);
+          }
+        }
+
+        // Initialize WebSockets connection
+        const ws = new WebSocket(`ws://localhost:8080/ws/canvas/${projectId}`);
+        wsRef.current = ws;
+
+        ws.onmessage = (event) => {
+          try {
+            const incomingItems = JSON.parse(event.data);
+            if (Array.isArray(incomingItems)) {
+              setItems(incomingItems);
+            }
+          } catch (err) {
+            console.error("Failed to parse incoming WS items:", err);
+          }
+        };
+      })
+      .catch(err => {
+         console.error("Failed to load initial Canvas state:", err);
+      });
+
+    return () => {
+      if (wsRef.current) wsRef.current.close();
+    };
+  }, [projectId]);
+
+  // Function to push updates to the WebSocket server
+  const wsBroadcast = (payloadItems: CanvasItem[]) => {
+     if (wsRef.current?.readyState === WebSocket.OPEN) {
+         wsRef.current.send(JSON.stringify(payloadItems));
+     }
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -38,12 +101,8 @@ export default function CanvasBoard() {
         });
       }
     };
-    // Initial size
     handleResize();
-    // Add event listener
     window.addEventListener("resize", handleResize);
-    
-    // Fix for next.js sometimes reporting 0 at initial mount due to CSS loading
     setTimeout(handleResize, 100);
 
     return () => window.removeEventListener("resize", handleResize);
@@ -66,7 +125,7 @@ export default function CanvasBoard() {
       type: "rectangle",
       x: point.x,
       y: point.y,
-      color: "#2563eb", // Tailwind blue-600
+      color: "#2563eb",
     };
 
     if (activeTool === "rectangle") {
@@ -75,10 +134,15 @@ export default function CanvasBoard() {
       newItem = { ...newItem, type: "circle", radius: 0 };
     } else if (activeTool === "text") {
       newItem = { ...newItem, type: "text", text: "Double click to edit text", color: "#000000" };
-      setIsDrawing(false); // Text is click-to-drop
+      setIsDrawing(false); 
+      
+      const newItems = [...itemsRef.current, newItem];
+      setItems(newItems);
+      wsBroadcast(newItems); // Broadcast immediately since it is fire-and-forget
+      return;
     }
 
-    setItems([...items, newItem]);
+    setItems([...itemsRef.current, newItem]);
   };
 
   const handleMouseMove = (e: any) => {
@@ -109,10 +173,25 @@ export default function CanvasBoard() {
   };
 
   const handleMouseUp = () => {
+    if (isDrawing) {
+       // Broadcast shapes that just finished being drawn
+       wsBroadcast(itemsRef.current);
+    }
     setIsDrawing(false);
   };
+
+  const handleDragEnd = (e: any, id: string) => {
+    const node = e.target;
+    const newItems = itemsRef.current.map(item => {
+       if (item.id === id) {
+           return { ...item, x: node.x(), y: node.y() };
+       }
+       return item;
+    });
+    setItems(newItems);
+    wsBroadcast(newItems);
+  };
   
-  // Add a simple zoom feature via trackpad or mouse wheel
   const handleWheel = (e: any) => {
     e.evt.preventDefault();
     const stage = stageRef.current;
@@ -127,14 +206,11 @@ export default function CanvasBoard() {
       y: (pointer.y - stage.y()) / oldScale,
     };
 
-    // Zoom speed
     const scaleBy = 1.05;
     const direction = e.evt.deltaY > 0 ? -1 : 1;
     let newScale = direction > 0 ? oldScale * scaleBy : oldScale / scaleBy;
     
-    // Set boundaries
     newScale = Math.max(0.1, Math.min(newScale, 10));
-
     stage.scale({ x: newScale, y: newScale });
 
     const newPos = {
@@ -172,6 +248,7 @@ export default function CanvasBoard() {
                     height={item.height || 0}
                     fill={item.color}
                     draggable={isDraggable}
+                    onDragEnd={(e) => handleDragEnd(e, item.id)}
                   />
                 );
               }
@@ -184,6 +261,7 @@ export default function CanvasBoard() {
                     radius={item.radius || 0}
                     fill={item.color}
                     draggable={isDraggable}
+                    onDragEnd={(e) => handleDragEnd(e, item.id)}
                   />
                 );
               }
@@ -197,11 +275,14 @@ export default function CanvasBoard() {
                     fontSize={24}
                     fill={item.color}
                     draggable={isDraggable}
+                    onDragEnd={(e) => handleDragEnd(e, item.id)}
                     onDblClick={(e) => {
                        if (activeTool === "pointer") {
                            const newText = prompt("Enter text:", item.text);
                            if (newText !== null) {
-                               setItems(prev => prev.map(i => i.id === item.id ? { ...i, text: newText } : i));
+                               const newItems = itemsRef.current.map(i => i.id === item.id ? { ...i, text: newText } : i);
+                               setItems(newItems);
+                               wsBroadcast(newItems);
                            }
                        }
                     }}

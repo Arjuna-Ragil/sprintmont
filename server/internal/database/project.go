@@ -19,3 +19,11 @@ func (r *ProjectRepo) CreateProjects(project *models.Project) (*models.Project, 
 	}
 	return project, nil
 }
+
+func (r *ProjectRepo) GetProject(projectID string) (*models.Project, error){
+	var project models.Project
+	err := r.DB.Gorm.Preload("Canvas").Where("id = ?", projectID).First(&project).Error; if err != nil{
+		return nil, err
+	}
+	return &project, nil
+}

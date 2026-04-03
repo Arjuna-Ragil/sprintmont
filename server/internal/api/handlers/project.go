@@ -45,3 +45,18 @@ func (h *ProjectHandler) CreateProject(c *gin.Context){
 		"data": project,
 	})
 }
+
+func (h *ProjectHandler) GetProject(c *gin.Context){
+	projectID := c.Param("project_id")
+	project, err := h.ProjectService.GetProject(projectID); if err != nil{
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Failed to retrieve project",
+			"data": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Successfully retrieve project",
+		"data": project,
+	})
+}

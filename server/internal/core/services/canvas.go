@@ -15,7 +15,7 @@ func NewCanvasService(canvasRepo *database.CanvasRepo) *CanvasService {
 
 func (s *CanvasService) CreateCanvas(projectID string) error {
 	canvas := models.Canvas{
-		Elements: []byte{},
+		Elements: []byte(`[]`),
 		ProjectID: projectID,
 	}
 	err := s.CanvasRepo.CreateCanvas(&canvas); if err != nil {
@@ -24,9 +24,9 @@ func (s *CanvasService) CreateCanvas(projectID string) error {
 	return nil
 }
 
-func (s *CanvasService) GetCanvas(projectID string) (models.Canvas, error){
+func (s *CanvasService) GetCanvas(projectID string) (*models.Canvas, error){
 	canvas, err := s.CanvasRepo.GetCanvas(projectID); if err != nil{
-		return models.Canvas{}, err
+		return nil, err
 	}
 	return canvas, nil
 }

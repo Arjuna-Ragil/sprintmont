@@ -21,6 +21,7 @@ func SetupRouter(r *gin.Engine, d Deps){
 	{
 		api.GET("/canvas/:project_id", d.Canvas.GetCanvas)
 
+		api.GET("/project/:project_id", d.Project.GetProject)
 		api.POST("/project", d.Project.CreateProject)
 	}
 } 

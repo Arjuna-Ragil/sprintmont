@@ -55,7 +55,7 @@ func main() {
 }
 
 func SetupApp(db *config.DB, bkt *config.Bucket, cache *config.Cache) api.Deps{
-	canvasRepo := database.NewCanvasRepo(db)
+	canvasRepo := database.NewCanvasRepo(db, cache)
 	canvasService := services.NewCanvasService(canvasRepo)
 	canvasHandler := handlers.NewCanvasHandler(canvasService)
 

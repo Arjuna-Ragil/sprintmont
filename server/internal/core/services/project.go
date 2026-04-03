@@ -29,3 +29,10 @@ func (s *ProjectService) CreateProject(input dto.ProjectInput) (*models.Project,
 	}
 	return project, nil
 }
+
+func (s *ProjectService) GetProject(projectID string) (*models.Project, error){
+	project, err := s.ProjectRepo.GetProject(projectID); if err != nil{
+		return nil, err
+	}
+	return project, nil
+}
