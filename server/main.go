@@ -5,7 +5,9 @@ import (
 	"log"
 
 	"github.com/Arjuna-Ragil/sprintmont/internal/api"
+	"github.com/Arjuna-Ragil/sprintmont/internal/api/handlers"
 	"github.com/Arjuna-Ragil/sprintmont/internal/config"
+	"github.com/Arjuna-Ragil/sprintmont/internal/core/services"
 	"github.com/Arjuna-Ragil/sprintmont/internal/database"
 	"github.com/Arjuna-Ragil/sprintmont/internal/websocket"
 	"github.com/gin-contrib/cors"
@@ -54,10 +56,21 @@ func main() {
 
 func SetupApp(db *config.DB, bkt *config.Bucket, cache *config.Cache) api.Deps{
 	canvasRepo := database.NewCanvasRepo(db)
+	canvasService := services.NewCanvasService(canvasRepo)
+	canvasHandler := handlers.NewCanvasHandler(canvasService)
+
+	projectRepo := database.NewProjectRepo(db)
+	projectService := services.NewProjectService(&projectRepo)
+	projectHandler := handlers.NewProjectHandler(projectService, canvasService)
+
 	wsManager := websocket.NewWsManager(cache.Client, canvasRepo)
-	canvasHandler := websocket.NewCanvasHandler(wsManager)
+	wsHandler := websocket.NewCanvasHandler(wsManager)
+
+
 
 	return api.Deps{
-		WS: canvasHandler,
+		WS: wsHandler,
+		Canvas: canvasHandler,
+		Project: projectHandler,
 	}
 }

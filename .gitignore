@@ -1,3 +1,4 @@
 .env
 seaweedfs_config/s3_config.json
 compose.override.yml
+.idea

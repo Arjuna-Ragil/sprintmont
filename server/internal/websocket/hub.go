@@ -58,7 +58,7 @@ func (h *Hub) Run() {
 
 				if len(h.Clients) == 0{
 					ctx := context.Background()
-					redisKey := "canvas" + h.CanvasID
+					redisKey := "canvas: " + h.CanvasID
 					data, err := h.Redis.Get(ctx, redisKey).Bytes()
 
 					if err == nil && len(data) > 0{

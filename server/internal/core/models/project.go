@@ -1,6 +1,11 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
 
 type Project struct {
 	ID         string `gorm:"primaryKey" json:"id"`
@@ -22,4 +27,11 @@ type ProjectUser struct {
 	ProjectID string `gorm:"primaryKey"`
 	User User `gorm:"foreignKey:UserID"`
 	Project Project `gorm:"foreignKey:ProjectID"`
+}
+
+func (c *Project) BeforeCreate(tx *gorm.DB) (err error){
+	if c.ID == ""{
+		c.ID = uuid.New().String()
+	}
+	return
 }
