@@ -44,9 +44,9 @@ func (r *CanvasRepo) GetCanvas(projectID string) (*models.Canvas, error){
 	return &canvas, nil
 }
 
-func (r *CanvasRepo) SaveCanvas(canvasID string, elements []byte) error{
+func (r *CanvasRepo) SaveCanvas(projectID string, elements []byte) error{
 	jsonElements := datatypes.JSON(elements)
-	err := r.DB.Gorm.Model(&models.Canvas{}).Where("id = ?", canvasID).Update("elements", jsonElements).Error
+	err := r.DB.Gorm.Model(&models.Canvas{}).Where("project_id = ?", projectID).Update("elements", jsonElements).Error
 	if err != nil{
 		return err
 	}
