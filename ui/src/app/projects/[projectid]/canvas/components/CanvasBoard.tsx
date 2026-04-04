@@ -5,6 +5,7 @@ import { Stage, Layer, Rect, Circle, Text } from "react-konva";
 import { Pointer, Hand, Square, Circle as CircleIcon, Type } from "lucide-react";
 import Konva from "konva";
 import { useParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 type ToolType = "pointer" | "hand" | "rectangle" | "circle" | "text";
 
@@ -41,12 +42,18 @@ export default function CanvasBoard() {
   const projectId = params?.projectid as string;
   const wsRef = useRef<WebSocket | null>(null);
 
+  const { data: session } = useSession();
+
   // Initialization & WebSocket Setup
   useEffect(() => {
-    if (!projectId) return;
+    if (!projectId || !session?.id_token) return;
 
     // Fetch initial state first from the DB
-    fetch(`http://localhost:8080/api/canvas/${projectId}`)
+    fetch(`http://localhost:8080/protected/api/canvas/${projectId}`, {
+      headers: {
+        "Authorization": `Bearer ${session.id_token}`
+      }
+    })
       .then(res => res.json())
       .then(resData => {
         if (resData?.data?.elements) {
@@ -61,8 +68,8 @@ export default function CanvasBoard() {
           }
         }
 
-        // Initialize WebSockets connection
-        const ws = new WebSocket(`ws://localhost:8080/ws/canvas/${projectId}`);
+        // Initialize WebSockets connection directly to the protected wss route with token embedded in URL
+        const ws = new WebSocket(`ws://localhost:8080/protected/ws/canvas/${projectId}?token=${session.id_token}`);
         wsRef.current = ws;
 
         ws.onmessage = (event) => {
@@ -83,7 +90,7 @@ export default function CanvasBoard() {
     return () => {
       if (wsRef.current) wsRef.current.close();
     };
-  }, [projectId]);
+  }, [projectId, session?.id_token]);
 
   // Function to push updates to the WebSocket server
   const wsBroadcast = (payloadItems: CanvasItem[]) => {

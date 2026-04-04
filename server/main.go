@@ -7,6 +7,7 @@ import (
 	"github.com/Arjuna-Ragil/sprintmont/internal/api"
 	"github.com/Arjuna-Ragil/sprintmont/internal/api/handlers"
 	"github.com/Arjuna-Ragil/sprintmont/internal/config"
+	"github.com/Arjuna-Ragil/sprintmont/internal/core/middleware"
 	"github.com/Arjuna-Ragil/sprintmont/internal/core/services"
 	"github.com/Arjuna-Ragil/sprintmont/internal/database"
 	"github.com/Arjuna-Ragil/sprintmont/internal/websocket"
@@ -55,6 +56,12 @@ func main() {
 }
 
 func SetupApp(db *config.DB, bkt *config.Bucket, cache *config.Cache) api.Deps{
+	authMiddleware := middleware.NewAuthDB(db)
+
+	userRepo := database.NewUserRepo(db)
+	userService := services.NewUserService(userRepo)
+	userHandler := handlers.NewUserHandler(userService)
+
 	canvasRepo := database.NewCanvasRepo(db, cache)
 	canvasService := services.NewCanvasService(canvasRepo)
 	canvasHandler := handlers.NewCanvasHandler(canvasService)
@@ -72,5 +79,7 @@ func SetupApp(db *config.DB, bkt *config.Bucket, cache *config.Cache) api.Deps{
 		WS: wsHandler,
 		Canvas: canvasHandler,
 		Project: projectHandler,
+		User: userHandler,
+		AuthMiddleware: authMiddleware,
 	}
 }
