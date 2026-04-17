@@ -1,6 +1,7 @@
 "use client";
 
 import { useSession, signIn } from "next-auth/react";
+import DoodleDecor from "@/components/DoodleDecor";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
@@ -16,15 +17,17 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-background text-on-background font-body paper-grain min-h-screen flex flex-col">
-      {/* Top Navigation */}
-      <header className="w-full sticky top-0 z-50 bg-stone-200/30 backdrop-blur-md shadow-[0_4px_0_0_rgba(0,0,0,0.05)]">
-        <nav className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
-          <div className="text-2xl font-black text-stone-800 tracking-tighter font-headline">Sprintmont</div>
+    <div className="text-on-background font-body min-h-screen flex flex-col relative" style={{ backgroundColor: "#ffffff", backgroundImage: "radial-gradient(#d4d4d8 1px, transparent 1px)", backgroundSize: "24px 24px" }}>
+      <DoodleDecor />
+
+      <div className="relative z-10 flex flex-col w-full flex-1">
+        <header className="w-full sticky top-6 z-50 px-6 pointer-events-none mt-4">
+        <nav className="flex justify-between items-center px-6 py-3 max-w-5xl mx-auto bg-stone-200/30 backdrop-blur-md shadow-[0_4px_0_0_rgba(0,0,0,0.05)] border border-outline-variant/30 rounded-full pointer-events-auto">
+          <div className="text-2xl font-black text-stone-800 tracking-tighter font-headline pl-2">Sprintmont</div>
           <div className="hidden md:flex items-center space-x-8">
-            <a className="text-[#00BCD4] border-b-4 border-[#00BCD4] pb-1 font-headline font-bold tracking-tight" href="#">Methodology</a>
-            <a className="text-stone-600 font-medium font-headline hover:text-[#00BCD4] hover:-rotate-1 transition-all duration-200" href="#">Features</a>
-            <a className="text-stone-600 font-medium font-headline hover:text-[#00BCD4] hover:-rotate-1 transition-all duration-200" href="#">Community</a>
+            <a className="text-[#00BCD4] border-b-4 border-[#00BCD4] pb-1 font-headline font-bold tracking-tight" href="#">Home</a>
+            <a className="text-stone-600 font-medium font-headline hover:text-[#00BCD4] hover:-rotate-1 transition-all duration-200" href="#features">Features</a>
+            <a className="text-stone-600 font-medium font-headline hover:text-[#00BCD4] hover:-rotate-1 transition-all duration-200" href="#community">Community</a>
           </div>
           <div className="flex items-center space-x-4">
             {!session && (
@@ -39,49 +42,169 @@ export default function Home() {
         </nav>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 overflow-hidden flex-grow">
+      <main className="max-w-7xl mx-auto px-6 overflow-hidden grow">
         {/* Hero Section */}
-        <section className="relative pt-20 pb-32 flex flex-col items-center text-center">
-          <div className="absolute -top-10 -left-10 opacity-20 pointer-events-none">
-            <span className="material-symbols-outlined text-8xl text-primary" style={{fontVariationSettings: "'FILL' 0"}}>draw</span>
-          </div>
-          <h1 className="font-headline font-black text-5xl md:text-8xl leading-none tracking-tighter mb-8 max-w-4xl relative">
-            Ship Something <span className="marker-underline italic text-primary-dim">Every</span> Month.
-            <div className="absolute -right-12 top-0 hidden lg:block">
-              <span className="font-marker text-2xl text-tertiary rotate-12 inline-block">No more<br/>abandoned repos!</span>
-              <span className="material-symbols-outlined text-tertiary block -rotate-12">trending_flat</span>
+        <section className="relative pt-20 pb-32 flex flex-col gap-10 items-center text-center">
+          <div className="flex flex-col items-center text-center">
+            <div className="absolute -top-10 -left-10 opacity-20 pointer-events-none">
+              <span className="material-symbols-outlined text-8xl text-primary" style={{ fontVariationSettings: "'FILL' 0" }}>draw</span>
             </div>
-          </h1>
-          <p className="text-xl md:text-2xl text-on-surface-variant max-w-2xl mb-12">
-            Sprintmont is the ultimate &quot;sketch-to-ship&quot; workspace for developers who want to stop dreaming and start building. 3 weeks of code. 1 week of hype.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-6 relative">
-            <button onClick={handleStart} className="bg-primary hover:bg-primary-dim text-on-primary text-xl px-10 py-5 rounded-xl font-black transition-all shadow-[8px_8px_0_0_rgba(0,101,115,0.2)] hover:translate-y-1 hover:translate-x-1 hover:shadow-none">
-              {session ? "Go to Dashboard" : "Get Started Free"}
-            </button>
-            <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 sm:translate-x-40">
-              <span className="font-marker text-xl text-secondary">Join 12,000+ builders →</span>
+            <div className="font-headline font-black text-5xl md:text-8xl leading-none mb-8 max-w-4xl relative">
+              <h1 className="tracking-tighter">
+                Ship Something <span className="marker-underline italic text-primary-dim">Every</span> Month.
+              </h1>
+              <div className="absolute -right-8 md:-right-24 -top-4 md:-top-8 hidden lg:block pointer-events-none">
+                <p className="font-marker text-xl text-tertiary rotate-15 inline-block drop-shadow-sm whitespace-nowrap">
+                  No more<br />abandoned repos!
+                </p>
+              </div>
+            </div>
+            <p className="text-xl md:text-2xl text-on-surface-variant max-w-2xl mb-12">
+              Sprintmont is the ultimate &quot;sketch-to-ship&quot; workspace for developers who want to stop dreaming and start building. 3 weeks of code. 1 week of hype.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-6 relative">
+              <button onClick={handleStart} className="bg-primary hover:bg-primary-dim text-on-primary text-xl px-10 py-5 rounded-xl font-black transition-all shadow-[8px_8px_0_0_rgba(0,101,115,0.2)] hover:translate-y-1 hover:translate-x-1 hover:shadow-none">
+                {session ? "Go to Dashboard" : "Get Started Free"}
+              </button>
+              <div className="absolute -bottom-14 sm:top-1/2 sm:bottom-auto left-1/2 sm:left-[-200px] md:left-[-220px] -translate-x-1/2 sm:translate-x-0 sm:-translate-y-1/2 whitespace-nowrap -rotate-6 pointer-events-none">
+                <span className="font-marker text-xl text-secondary">Join 12,000+ builders</span>
+              </div>
             </div>
           </div>
 
-          {/* Hero Image / Visual Anchor */}
-          <div className="mt-24 relative w-full max-w-5xl">
-            <div className="absolute -top-8 left-10 z-10 bg-surface-container-lowest p-4 rounded-xl shadow-lg rotate-[-2deg] border-outline-variant/20 border">
-              <p className="font-marker text-lg text-primary">This month: AI SaaS</p>
+          {/* Hero Demo UI Component */}
+          <div className="mt-20 w-full max-w-[1000px] mx-auto relative z-20">
+            {/* Decorative Floating Badges */}
+            <div className="absolute -top-6 -left-4 md:-left-12 z-30 bg-surface-container-lowest p-3 md:p-4 rounded-xl shadow-lg -rotate-2 border-outline-variant/30 border">
+              <p className="font-marker text-sm md:text-lg text-primary">Your Workspace</p>
             </div>
-            <div className="bg-surface-container-low rounded-[40px] p-2 md:p-4 overflow-hidden border-2 border-dashed border-outline-variant/30">
-              <img className="w-full h-auto rounded-[32px] grayscale hover:grayscale-0 transition-all duration-700" alt="Modern developer workspace with multiple monitors, coding environment visible, and hand-drawn doodles overlaying the digital screen aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkT55BVPePGD1VH1hXADRrBVNunG977CKIyouyiUN5Hfvc7Mk3N-2x63I-crrU6Brnd-wtzlMRgolmSeGuXAf_toL6i5Me9_wnxg4FT8h3i6eJL1sSXEI7eDF4hCVdgEXkqPUte8FNd-puCREgQf1SVkWIIstE8gvhtYvmr2hR7q73cbNEeh9p2MEVRh6OiZKyF4Vr6V7Fmgo_KH1rqQdVpPf1ZBRuOquwFEM8y4xmyE04c5aevqbqRa3qSVh08s5LKOYLl-55"/>
+            
+            <div className="absolute -bottom-8 -right-4 md:-right-12 z-30 p-4 md:p-6 bg-tertiary-container/90 backdrop-blur-md rounded-2xl shadow-xl rotate-3 max-w-[200px] md:max-w-xs text-left border border-outline-variant/20 hidden sm:block">
+              <span className="material-symbols-outlined text-on-tertiary-container mb-1">local_fire_department</span>
+              <p className="font-bold text-on-tertiary-container text-sm md:text-base leading-tight md:leading-normal">14-Day Streak</p>
+              <p className="text-xs text-on-tertiary-container/80 hidden md:block mt-1">Keep the momentum going. Ship day is almost here.</p>
             </div>
-            <div className="absolute -bottom-10 -right-4 z-10 p-6 bg-tertiary-container/90 backdrop-blur-md rounded-2xl shadow-xl rotate-[3deg] max-w-xs text-left">
-              <span className="material-symbols-outlined text-on-tertiary-container mb-2">rocket_launch</span>
-              <p className="font-bold text-on-tertiary-container">24 Projects Shipped Today</p>
-              <p className="text-sm text-on-tertiary-container/80">The community is heating up. Get your build ready for Pitch Week.</p>
+
+            {/* Browser/Dashboard Frame */}
+            <div className="bg-surface-container-lowest rounded-[24px] md:rounded-[32px] overflow-hidden border border-outline-variant/30 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] flex flex-col w-full h-[450px] md:h-[600px] transform rotate-[-1deg] origin-bottom-left transition-all duration-700 hover:rotate-0 hover:shadow-[0_40px_70px_-15px_rgba(0,0,0,0.15)] group">
+              
+              {/* Browser Header */}
+              <div className="h-10 md:h-12 bg-surface-container flex items-center px-4 md:px-6 border-b border-outline-variant/20 gap-4">
+                <div className="flex gap-2">
+                  <div className="w-3 h-3 rounded-full bg-[#FF5F56] border border-[#E0443E]"></div>
+                  <div className="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]"></div>
+                  <div className="w-3 h-3 rounded-full bg-[#27C93F] border border-[#1AAB29]"></div>
+                </div>
+                <div className="flex-1 flex justify-center hidden sm:flex opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <div className="bg-surface px-4 md:px-32 py-1.5 rounded-md text-xs font-mono text-on-surface-variant/60 flex items-center gap-2 border border-outline-variant/20">
+                    <span className="material-symbols-outlined text-[14px]">lock</span>
+                    app.sprintmont.com
+                  </div>
+                </div>
+              </div>
+              
+              {/* Dashboard Content */}
+              <div className="flex flex-1 overflow-hidden bg-surface-container-lowest">
+                {/* Sidebar */}
+                <div className="w-64 bg-surface-container/30 border-r border-outline-variant/20 p-6 hidden md:flex flex-col">
+                  <div className="font-headline font-black text-2xl tracking-tighter mb-10 pl-2">Sprintmont</div>
+                  <div className="space-y-2 flex-1">
+                    <div className="flex items-center gap-3 text-primary font-bold bg-primary-container/20 px-4 py-3 rounded-xl">
+                      <span className="material-symbols-outlined text-primary">dashboard</span>
+                      Active Sprint
+                    </div>
+                    <div className="flex items-center gap-3 text-on-surface-variant hover:bg-surface px-4 py-3 rounded-xl cursor-default transition-colors">
+                      <span className="material-symbols-outlined">rocket</span>
+                      My Portfolio
+                    </div>
+                    <div className="flex items-center gap-3 text-on-surface-variant hover:bg-surface px-4 py-3 rounded-xl cursor-default transition-colors">
+                      <span className="material-symbols-outlined">group</span>
+                      Community
+                    </div>
+                  </div>
+                  
+                  {/* User Profile Mock */}
+                  <div className="flex items-center gap-3 mt-auto pt-4 border-t border-outline-variant/20">
+                    <div className="w-10 h-10 rounded-full bg-stone-200 border-2 border-surface flex items-center justify-center shrink-0">
+                      <span className="material-symbols-outlined text-stone-500">face</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-bold leading-tight">Builder</span>
+                      <span className="text-xs text-on-surface-variant leading-tight">Pro Member</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Main Content Area */}
+                <div className="flex-1 bg-surface-container-lowest p-6 md:p-10 overflow-y-auto">
+                  <div className="flex justify-between items-start mb-8 md:mb-10">
+                    <div>
+                      <p className="font-marker text-secondary text-base md:text-lg mb-1">September Cohort</p>
+                      <h3 className="font-headline font-black text-2xl md:text-4xl text-on-surface">AI Story Generator</h3>
+                    </div>
+                    <div className="bg-primary/10 border border-primary/20 text-primary-dim px-4 py-2 rounded-full font-bold text-xs md:text-sm flex items-center gap-2">
+                       <span className="relative flex h-2 w-2 md:h-3 md:w-3">
+                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                         <span className="relative inline-flex rounded-full h-2 w-2 md:h-3 md:w-3 bg-primary"></span>
+                       </span>
+                       Week 2: Code
+                    </div>
+                  </div>
+                  
+                  {/* Progress Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-8 md:mb-10">
+                    <div className="bg-surface p-5 md:p-6 rounded-2xl border border-outline-variant/30 opacity-60">
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="material-symbols-outlined text-on-surface-variant text-2xl md:text-3xl">task_alt</span>
+                        <span className="text-[10px] uppercase font-black text-on-surface-variant bg-surface-container px-2 py-1 rounded">Finished</span>
+                      </div>
+                      <h4 className="font-bold text-lg md:text-xl mb-1">Week 1: Plan</h4>
+                      <p className="text-xs md:text-sm text-on-surface-variant">Specs written. DB designed.</p>
+                    </div>
+                    <div className="bg-primary-container/10 p-5 md:p-6 rounded-2xl border-2 border-primary/30 relative overflow-hidden shadow-[0_8px_30px_rgb(0,101,115,0.05)]">
+                      <div className="absolute right-0 top-0 w-32 h-32 bg-primary/5 rounded-bl-full pointer-events-none"></div>
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="material-symbols-outlined text-primary text-2xl md:text-3xl">terminal</span>
+                        <span className="text-[10px] uppercase font-black text-primary bg-primary/10 px-2 py-1 rounded border border-primary/20">In Progress</span>
+                      </div>
+                      <h4 className="font-bold text-lg md:text-xl mb-1 text-primary-dim">Week 2: Code</h4>
+                      <div className="w-full bg-surface-container rounded-full h-1.5 mt-4 mb-2 overflow-hidden">
+                        <div className="bg-primary h-1.5 rounded-full w-[45%]"></div>
+                      </div>
+                      <p className="text-xs text-primary font-medium text-right">45% Complete</p>
+                    </div>
+                  </div>
+
+                  {/* Task List mockup */}
+                  <h4 className="font-bold text-base md:text-lg mb-4 text-on-surface">Weekly Tasks</h4>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-4 bg-surface p-3 md:p-4 rounded-xl border border-outline-variant/20 shadow-sm opacity-50">
+                      <div className="w-5 h-5 md:w-6 md:h-6 rounded bg-primary flex items-center justify-center shrink-0">
+                        <span className="material-symbols-outlined text-white text-[14px] md:text-[16px]">check</span>
+                      </div>
+                      <span className="line-through text-on-surface-variant font-medium text-sm md:text-base">Initialize Next.js & Go Server</span>
+                    </div>
+                    <div className="flex items-center gap-4 bg-surface p-3 md:p-4 rounded-xl border border-outline-variant/20 shadow-sm border-l-4 border-l-secondary relative">
+                      <div className="w-5 h-5 md:w-6 md:h-6 rounded border-2 border-outline-variant bg-surface-container-lowest shrink-0"></div>
+                      <span className="font-bold text-on-background text-sm md:text-base">Integrate OpenAI Streaming API</span>
+                      <div className="ml-auto hidden sm:flex -space-x-2">
+                        <div className="w-6 h-6 rounded-full bg-stone-300 border-2 border-surface"></div>
+                        <div className="w-6 h-6 rounded-full bg-stone-400 border-2 border-surface"></div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 bg-surface p-3 md:p-4 rounded-xl border border-outline-variant/20 shadow-sm">
+                      <div className="w-5 h-5 md:w-6 md:h-6 rounded border-2 border-outline-variant bg-surface-container-lowest shrink-0"></div>
+                      <span className="font-medium text-on-surface-variant text-sm md:text-base">Design Landing Page layout</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Methodology Section */}
-        <section className="py-24 relative">
+        <section id="features" className="py-24 relative">
           <div className="text-center mb-16">
             <h2 className="font-headline font-extrabold text-4xl mb-4">The Sprintmont Rhythm</h2>
             <p className="font-marker text-2xl text-secondary-dim">Simple. Repeatable. Effective.</p>
@@ -89,7 +212,7 @@ export default function Home() {
           <div className="relative flex flex-col md:flex-row justify-between items-center gap-12 px-10">
             {/* Timeline Connector (Hidden on Mobile) */}
             <div className="absolute top-1/2 left-0 w-full h-1 border-t-4 border-dashed border-outline-variant/30 -translate-y-1/2 hidden md:block"></div>
-            
+
             {/* Phase 1 */}
             <div className="relative z-10 bg-surface text-center p-8 rounded-3xl w-full md:w-1/4 border-2 border-on-background/5 hover:scale-105 transition-transform">
               <div className="bg-primary-container text-on-primary-container w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
@@ -127,7 +250,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
               <span className="inline-block px-4 py-1 bg-primary text-on-primary rounded-full text-xs font-bold uppercase tracking-widest mb-6">Built-in Tools</span>
-              <h2 className="font-headline font-black text-4xl md:text-5xl mb-8 leading-tight">Your digital workbench, <br/><span className="text-primary italic">reimagined.</span></h2>
+              <h2 className="font-headline font-black text-4xl md:text-5xl mb-8 leading-tight">Your digital workbench, <br /><span className="text-primary italic">reimagined.</span></h2>
               <ul className="space-y-6">
                 <li className="flex items-start gap-4">
                   <span className="material-symbols-outlined text-primary mt-1">check_circle</span>
@@ -169,7 +292,7 @@ export default function Home() {
                 </div>
                 <div className="col-span-2 bg-surface-container-highest/50 p-6 rounded-2xl mt-4 relative">
                   <p className="font-marker text-xl text-on-surface mb-4">Brainstorming Canvas</p>
-                  <img className="w-full h-48 object-cover rounded-xl opacity-80 mix-blend-multiply" alt="Close-up of a whiteboard with handwritten sketches, architectural diagrams, and colorful marker lines" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxqmHtd3-oHhDmOEN4iBPhE6jmRiKIMQSyvSKZCBOGh4cENkRcVAwAULEhZXDHnnxVVpwjMZfF03VoNYfzihHTiYgDnjIYNmapqy_fLGLpMpTWd07-AvPR1vwAbu9-RxHa6FUA_stI3B7GMwmkSqkDwQYSiTq6WsX_jRZp5m5KiRU4WK2-qrWrpbTyUrAwGBVUA4DsrMH-OyBnK0BiUQ6oW4uO7h4jFRUSp1xpxeuQONE6cICKMxFytqa7IjOIS6INFW2EbDMc"/>
+                  <img className="w-full h-48 object-cover rounded-xl opacity-80 mix-blend-multiply" alt="Close-up of a whiteboard with handwritten sketches, architectural diagrams, and colorful marker lines" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxqmHtd3-oHhDmOEN4iBPhE6jmRiKIMQSyvSKZCBOGh4cENkRcVAwAULEhZXDHnnxVVpwjMZfF03VoNYfzihHTiYgDnjIYNmapqy_fLGLpMpTWd07-AvPR1vwAbu9-RxHa6FUA_stI3B7GMwmkSqkDwQYSiTq6WsX_jRZp5m5KiRU4WK2-qrWrpbTyUrAwGBVUA4DsrMH-OyBnK0BiUQ6oW4uO7h4jFRUSp1xpxeuQONE6cICKMxFytqa7IjOIS6INFW2EbDMc" />
                   <div className="absolute inset-0 flex items-center justify-center">
                     <span className="material-symbols-outlined text-6xl text-primary/40">gesture</span>
                   </div>
@@ -186,7 +309,7 @@ export default function Home() {
               <span className="material-symbols-outlined text-[300px]">auto_awesome</span>
             </div>
             <div>
-              <h3 className="text-4xl font-black mb-6 leading-tight">AI Idea Generator &amp;<br/>Feature Scoper</h3>
+              <h3 className="text-4xl font-black mb-6 leading-tight">AI Idea Generator &amp;<br />Feature Scoper</h3>
               <p className="text-xl opacity-90 max-w-md">Input your tech stack and a vague goal. We&apos;ll sketch out a 3-week roadmap and generate the first 10 user stories for you.</p>
             </div>
             <div className="mt-12 flex gap-4">
@@ -208,23 +331,20 @@ export default function Home() {
         </section>
 
         {/* Community Section */}
-        <section className="py-24">
+        <section id="community" className="py-24">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
             <div>
               <h2 className="font-headline font-black text-5xl mb-4">Wall of Projects</h2>
               <p className="text-xl text-on-surface-variant">The best builds from the Sprintmont community.</p>
             </div>
-            <button className="text-primary font-bold flex items-center gap-2 hover:underline">
-              View all 1,240 builds <span className="material-symbols-outlined">arrow_forward</span>
-            </button>
           </div>
-          
+
           {/* Bento Wall */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
             <div className="md:col-span-7 bg-surface-container rounded-3xl overflow-hidden group">
               <div className="relative h-64 overflow-hidden">
-                <img className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Digital screenshot of a clean web application dashboard with minimalist UI elements and vibrant blue accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDi8vxAUfPudQQQUEKM7qcY4McYiz3KRsll9Rbt0O-gQhr-wDvfTClDLzkCt1DewgpSue8px4Qq_W_xsjwXkM3gjqe_9u3BlXPlUhehu2tDzJ0a1eDbTJ6tUH17_ZwUnkERvt-v9-b_qcENn_Sx3vB-z7AeWvUsOAbRf931EoEOakpshF5W8Fy2Jm5z-S24a2S_8xhMjhq9aLEvP7bX6My7c16x4F7kZc4pG_4a_ZpiBW4bkax20N9fJGLV0E6S2eFlWcAco67s"/>
-                <div className="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent"></div>
+                <img className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Digital screenshot of a clean web application dashboard with minimalist UI elements and vibrant blue accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDi8vxAUfPudQQQUEKM7qcY4McYiz3KRsll9Rbt0O-gQhr-wDvfTClDLzkCt1DewgpSue8px4Qq_W_xsjwXkM3gjqe_9u3BlXPlUhehu2tDzJ0a1eDbTJ6tUH17_ZwUnkERvt-v9-b_qcENn_Sx3vB-z7AeWvUsOAbRf931EoEOakpshF5W8Fy2Jm5z-S24a2S_8xhMjhq9aLEvP7bX6My7c16x4F7kZc4pG_4a_ZpiBW4bkax20N9fJGLV0E6S2eFlWcAco67s" />
+                <div className="absolute inset-0 bg-linear-to-t from-surface-container to-transparent"></div>
               </div>
               <div className="p-8">
                 <div className="flex justify-between items-center mb-4">
@@ -235,10 +355,10 @@ export default function Home() {
                 <p className="text-on-surface-variant">Built in 22 days by @sarah_codes. 400 stars on GitHub already.</p>
               </div>
             </div>
-            
+
             <div className="md:col-span-5 bg-surface-container rounded-3xl p-8 flex flex-col justify-end relative">
               <div className="absolute top-6 right-6">
-                <span className="material-symbols-outlined text-4xl text-secondary" style={{fontVariationSettings: "'FILL' 1"}}>star</span>
+                <span className="material-symbols-outlined text-4xl text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
               </div>
               <div>
                 <h4 className="text-xl font-black mb-2">Pixel-Pusher AI</h4>
@@ -250,7 +370,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            
+
             <div className="md:col-span-4 bg-surface-container rounded-3xl p-8 group">
               <div className="aspect-square bg-surface-container-high rounded-2xl mb-6 overflow-hidden flex items-center justify-center border-2 border-dashed border-outline-variant">
                 <span className="material-symbols-outlined text-6xl text-outline-variant group-hover:rotate-12 transition-transform">add</span>
@@ -258,10 +378,10 @@ export default function Home() {
               <h4 className="text-lg font-bold">Your Project Here</h4>
               <p className="text-sm opacity-60">Ready for the next cohort? Registration ends in 3 days.</p>
             </div>
-            
+
             <div className="md:col-span-8 bg-tertiary text-on-tertiary p-12 rounded-3xl flex items-center gap-8">
               <div className="hidden sm:block">
-                <span className="material-symbols-outlined text-6xl" style={{fontVariationSettings: "'FILL' 1"}}>workspace_premium</span>
+                <span className="material-symbols-outlined text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>workspace_premium</span>
               </div>
               <div>
                 <h4 className="text-2xl font-black mb-2">Win the &quot;Golden Marker&quot;</h4>
@@ -276,13 +396,11 @@ export default function Home() {
           <div className="max-w-2xl mx-auto">
             <h2 className="font-headline font-black text-4xl mb-6">Ready to stop idling?</h2>
             <p className="text-xl text-on-surface-variant mb-10">Start your first month today. No credit card required. Just code.</p>
-            <form className="flex flex-col sm:flex-row gap-4">
-              <input className="flex-grow rounded-xl border-2 border-on-background/10 bg-surface-container-low px-6 py-4 focus:ring-2 focus:ring-primary outline-none transition-all" placeholder="Enter your email" type="email"/>
-              <button className="bg-on-background text-surface px-8 py-4 rounded-xl font-black hover:bg-primary-dim transition-colors" type="button" onClick={handleStart}>
-                Ship Now
+            <div className="flex justify-center">
+              <button onClick={handleStart} className="bg-primary hover:bg-primary-dim text-on-primary text-xl px-12 py-5 rounded-xl font-black transition-all shadow-[8px_8px_0_0_rgba(0,101,115,0.2)] hover:translate-y-1 hover:translate-x-1 hover:shadow-none w-full sm:w-auto">
+                {session ? "Go to Dashboard" : "Get Started Free"}
               </button>
-            </form>
-            <p className="mt-6 font-marker text-lg text-secondary italic">Next cohort starts in 4d : 12h : 33m</p>
+            </div> 
           </div>
         </section>
       </main>
@@ -291,7 +409,7 @@ export default function Home() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-8 px-12 py-16 max-w-7xl mx-auto text-center md:text-left">
           <div>
             <div className="font-black text-stone-800 text-2xl mb-2 font-headline">Sprintmont</div>
-            <p className="font-['Epilogue'] text-sm text-stone-500 max-w-xs">© 2024 Sprintmont. Keep sketching. Built for builders, by builders.</p>
+            <p className="font-['Epilogue'] text-sm text-stone-500 max-w-xs">© 2026 Sprintmont. Keep sketching. Built for builders, by builders.</p>
           </div>
           <div className="flex flex-wrap justify-center gap-8">
             <a className="font-['Epilogue'] text-sm text-stone-500 hover:text-[#00BCD4] hover:underline decoration-wavy transition-colors duration-300" href="#">Twitter</a>
@@ -301,13 +419,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-
-      {/* Doodle Decor Accents */}
-      <div className="fixed top-[20%] right-[5%] pointer-events-none opacity-20 -rotate-12 hidden lg:block">
-        <span className="material-symbols-outlined text-[120px] text-primary">architecture</span>
-      </div>
-      <div className="fixed bottom-[10%] left-[2%] pointer-events-none opacity-20 rotate-12 hidden lg:block">
-        <span className="material-symbols-outlined text-[100px] text-tertiary">brush</span>
       </div>
     </div>
   );

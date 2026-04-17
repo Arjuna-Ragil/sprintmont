@@ -90,7 +90,9 @@
   }
   
   .paper-grain {
-    background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBvP6LP_0XQbxnCUIbw_ZXr6aHyclojrSJbPeW3Gg5pqVVkIjojdRVRC0UKqEYpoEXKTCAps82Y6v3Do5C1R6mQ_NNoWTXRD7wMGgYdyKcnSfa0lv8yQ9xzqo7QXNekJFAM3cwLkyKXl-NEwQxtyNaSfLmrY9BBTNo3dFYD0pFtNl86xez5PSOJ0z70DGi4JXTnbMBLwolQI4MSZJXkL7KvceNJcFy0gspbv2Wj8ydGL1DGkE2UinEC6CnhkCdKtgnMb-vPz3AN");
+    background-color: #ffffff;
+    background-image: radial-gradient(#d4d4d8 1px, transparent 1px);
+    background-size: 24px 24px;
   }
   
   .sticky-note {
