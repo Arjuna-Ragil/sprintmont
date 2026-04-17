@@ -1,26 +1,104 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-secondary: #874e00;
+  --color-on-tertiary: #ffeff0;
+  --color-surface-container-lowest: #ffffff;
+  --color-error-container: #fb5151;
+  --color-outline-variant: #adada9;
+  --color-inverse-surface: #0d0f0c;
+  --color-background: #f7f7f2;
+  --color-on-background: #2d2f2c;
+  --color-on-tertiary-fixed-variant: #77002d;
+  --color-on-surface-variant: #5a5c58;
+  --color-primary-fixed-dim: #3cd2eb;
+  --color-on-secondary-fixed: #4f2c00;
+  --color-on-secondary-fixed-variant: #774400;
+  --color-secondary-container: #ffc791;
+  --color-on-primary-fixed-variant: #005763;
+  --color-surface-container: #e8e9e3;
+  --color-primary-container: #50e1f9;
+  --color-on-error: #ffefee;
+  --color-primary-fixed: #50e1f9;
+  --color-error-dim: #9f0519;
+  --color-on-primary-fixed: #003840;
+  --color-on-secondary: #fff0e5;
+  --color-tertiary-dim: #a1003f;
+  --color-outline: #767773;
+  --color-surface-container-high: #e2e3dd;
+  --color-on-primary-container: #004d58;
+  --color-on-tertiary-fixed: #390011;
+  --color-surface-tint: #006573;
+  --color-surface-container-highest: #dcddd7;
+  --color-secondary-dim: #764400;
+  --color-surface-dim: #d3d5cf;
+  --color-surface-bright: #f7f7f2;
+  --color-on-error-container: #570008;
+  --color-tertiary-fixed: #ff8fa4;
+  --color-on-surface: #2d2f2c;
+  --color-surface-container-low: #f1f1ec;
+  --color-on-secondary-container: #6a3c00;
+  --color-secondary-fixed: #ffc791;
+  --color-primary-dim: #005864;
+  --color-inverse-primary: #50e1f9;
+  --color-tertiary-container: #ff8fa4;
+  --color-secondary-fixed-dim: #ffb467;
+  --color-surface: #f7f7f2;
+  --color-on-tertiary-container: #670025;
+  --color-primary: #006573;
+  --color-tertiary: #b70049;
+  --color-surface-variant: #dcddd7;
+  --color-tertiary-fixed-dim: #ff7794;
+  --color-on-primary: #daf8ff;
+  --color-error: #b31b25;
+  --color-inverse-on-surface: #9c9d99;
+
+  --font-headline: "Epilogue", sans-serif;
+  --font-body: "Plus Jakarta Sans", sans-serif;
+  --font-label: "Plus Jakarta Sans", sans-serif;
+  --font-marker: "Gochi Hand", cursive;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer utilities {
+  .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  
+  .marker-underline {
+    background-image: linear-gradient(120deg, #50e1f9 0%, #50e1f9 100%);
+    background-repeat: no-repeat;
+    background-size: 100% 0.3em;
+    background-position: 0 88%;
+  }
+  
+  .scribble-border {
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  }
+  
+  .paper-grain {
+    background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBvP6LP_0XQbxnCUIbw_ZXr6aHyclojrSJbPeW3Gg5pqVVkIjojdRVRC0UKqEYpoEXKTCAps82Y6v3Do5C1R6mQ_NNoWTXRD7wMGgYdyKcnSfa0lv8yQ9xzqo7QXNekJFAM3cwLkyKXl-NEwQxtyNaSfLmrY9BBTNo3dFYD0pFtNl86xez5PSOJ0z70DGi4JXTnbMBLwolQI4MSZJXkL7KvceNJcFy0gspbv2Wj8ydGL1DGkE2UinEC6CnhkCdKtgnMb-vPz3AN");
+  }
+  
+  .sticky-note {
+    transform: rotate(-1deg);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+  }
+  
+  .sticky-note:nth-child(even) {
+    transform: rotate(1.5deg);
+  }
 }
