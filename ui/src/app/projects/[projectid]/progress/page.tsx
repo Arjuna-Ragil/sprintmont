@@ -35,7 +35,7 @@ export default function ProgressPage() {
   const fetchTasks = async () => {
     if (!session?.id_token || !projectId) return;
     try {
-      const res = await fetch(`http://backend:8080/protected/api/project/${projectId}/tasks`, {
+      const res = await fetch(`/backend-api/protected/api/project/${projectId}/tasks`, {
         headers: { Authorization: `Bearer ${session.id_token}` },
       });
       if (res.ok) {
@@ -59,7 +59,7 @@ export default function ProgressPage() {
 
     setIsSubmitting(true);
     try {
-      const res = await fetch(`http://backend:8080/protected/api/project/${projectId}/tasks`, {
+      const res = await fetch(`/backend-api/protected/api/project/${projectId}/tasks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -157,8 +157,8 @@ export default function ProgressPage() {
               </div>
               <div className="shrink-0 self-start sm:self-auto">
                 <span className={`text-xs font-bold px-3 py-1 rounded-full border ${task.status === 'Done' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
-                    task.status === 'In Progress' ? 'bg-orange-50 border-orange-200 text-orange-700' :
-                      'bg-stone-50 border-stone-200 text-stone-600'
+                  task.status === 'In Progress' ? 'bg-orange-50 border-orange-200 text-orange-700' :
+                    'bg-stone-50 border-stone-200 text-stone-600'
                   }`}>
                   {task.status}
                 </span>

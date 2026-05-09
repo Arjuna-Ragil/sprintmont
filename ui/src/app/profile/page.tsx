@@ -38,7 +38,7 @@ export default function Profile() {
       if (!session?.id_token) return;
 
       try {
-        const userRes = await fetch(`http://backend:8080/protected/api/me`, {
+        const userRes = await fetch(`/backend-api/protected/api/me`, {
           headers: {
             Authorization: `Bearer ${session.id_token}`,
           },
@@ -72,7 +72,7 @@ export default function Profile() {
         payload.append("profile_picture", editFile);
       }
 
-      const res = await fetch(`http://backend:8080/protected/api/me`, {
+      const res = await fetch(`/backend-api/protected/api/me`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${session.id_token}`,
@@ -83,7 +83,7 @@ export default function Profile() {
       if (res.ok) {
         setIsEditing(false);
         // Refresh User Data
-        const userRes = await fetch(`http://backend:8080/protected/api/me`, {
+        const userRes = await fetch(`/backend-api/protected/api/me`, {
           headers: { Authorization: `Bearer ${session.id_token}` },
         });
         if (userRes.ok) {

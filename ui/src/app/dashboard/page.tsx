@@ -59,7 +59,7 @@ export default function Dashboard() {
   const fetchProjects = async () => {
     if (!session?.id_token) return;
     try {
-      const projectRes = await fetch(`http://backend:8080/protected/api/project`, {
+      const projectRes = await fetch(`/backend-api/protected/api/project`, {
         headers: {
           Authorization: `Bearer ${session.id_token}`,
         },
@@ -76,7 +76,7 @@ export default function Dashboard() {
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!session?.id_token) return;
-    
+
     setIsSubmitting(true);
     try {
       const payload = new FormData();
@@ -90,7 +90,7 @@ export default function Dashboard() {
         payload.append("banner_image", bannerFile);
       }
 
-      const res = await fetch(`http://backend:8080/protected/api/project`, {
+      const res = await fetch(`/backend-api/protected/api/project`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${session.id_token}`,
@@ -133,7 +133,7 @@ export default function Dashboard() {
         payload.append("profile_picture", welcomeFile);
       }
 
-      const res = await fetch(`http://backend:8080/protected/api/me`, {
+      const res = await fetch(`/backend-api/protected/api/me`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${session.id_token}`,
@@ -144,7 +144,7 @@ export default function Dashboard() {
       if (res.ok) {
         setShowWelcomeModal(false);
         // Refresh User Data
-        const userRes = await fetch(`http://backend:8080/protected/api/me`, {
+        const userRes = await fetch(`/backend-api/protected/api/me`, {
           headers: { Authorization: `Bearer ${session.id_token}` },
         });
         if (userRes.ok) {
@@ -173,12 +173,12 @@ export default function Dashboard() {
 
       try {
         // Fetch User Data
-        const userRes = await fetch(`http://backend:8080/protected/api/me`, {
+        const userRes = await fetch(`/backend-api/protected/api/me`, {
           headers: {
             Authorization: `Bearer ${session.id_token}`,
           },
         });
-        
+
         if (userRes.ok) {
           const userDataRes = await userRes.json();
           setUserData(userDataRes.data);
@@ -188,7 +188,7 @@ export default function Dashboard() {
         }
 
         // Fetch Projects
-        const projectRes = await fetch(`http://backend:8080/protected/api/project`, {
+        const projectRes = await fetch(`/backend-api/protected/api/project`, {
           headers: {
             Authorization: `Bearer ${session.id_token}`,
           },
@@ -306,7 +306,7 @@ export default function Dashboard() {
                   <div className="p-6 flex flex-col flex-1">
                     <h3 className="text-xl font-bold text-stone-800 mb-2 group-hover:text-teal-600 transition-colors line-clamp-1">{project.title}</h3>
                     <p className="text-stone-500 text-sm line-clamp-2 mb-6 flex-1">{project.desc || "No description provided."}</p>
-                    
+
                     <div className="flex items-center justify-between mt-auto pt-4 border-t border-stone-100">
                       <span className="text-xs font-medium text-stone-400">
                         {new Date(project.created_at).toLocaleDateString()}
@@ -336,21 +336,21 @@ export default function Dashboard() {
             <form onSubmit={handleCreateProject} className="p-6 md:p-8 space-y-6">
               <div className="space-y-2">
                 <label className="text-sm font-bold text-stone-700">Project Title <span className="text-red-500">*</span></label>
-                <input 
+                <input
                   required
-                  type="text" 
+                  type="text"
                   value={formData.title}
-                  onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-stone-50 focus:bg-white text-stone-800"
                   placeholder="e.g. Acme Web App"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-sm font-bold text-stone-700">Description</label>
-                <textarea 
+                <textarea
                   value={formData.desc}
-                  onChange={(e) => setFormData({...formData, desc: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, desc: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-stone-50 focus:bg-white text-stone-800 resize-none h-24"
                   placeholder="Briefly describe what you're building..."
                 />
@@ -359,20 +359,20 @@ export default function Dashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-stone-700">GitHub URL</label>
-                  <input 
-                    type="url" 
+                  <input
+                    type="url"
                     value={formData.github}
-                    onChange={(e) => setFormData({...formData, github: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, github: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-stone-50 focus:bg-white text-stone-800"
                     placeholder="https://github.com/..."
                   />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-stone-700">Demo URL</label>
-                  <input 
-                    type="url" 
+                  <input
+                    type="url"
                     value={formData.demo}
-                    onChange={(e) => setFormData({...formData, demo: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, demo: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-stone-50 focus:bg-white text-stone-800"
                     placeholder="https://your-demo.com"
                   />
@@ -382,18 +382,18 @@ export default function Dashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-stone-700">Pitch Deck URL</label>
-                  <input 
-                    type="url" 
+                  <input
+                    type="url"
                     value={formData.pitch_deck}
-                    onChange={(e) => setFormData({...formData, pitch_deck: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, pitch_deck: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-stone-50 focus:bg-white text-stone-800"
                     placeholder="https://pitch.com/..."
                   />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-stone-700">Banner Image</label>
-                  <input 
-                    type="file" 
+                  <input
+                    type="file"
                     accept="image/*"
                     onChange={(e) => {
                       if (e.target.files && e.target.files[0]) {
@@ -415,7 +415,7 @@ export default function Dashboard() {
                       id="active"
                       type="checkbox"
                       checked={formData.active}
-                      onChange={(e) => setFormData({...formData, active: e.target.checked})}
+                      onChange={(e) => setFormData({ ...formData, active: e.target.checked })}
                       className="w-5 h-5 text-teal-600 border-stone-300 rounded focus:ring-teal-500/20 cursor-pointer"
                     />
                   </div>
@@ -427,15 +427,15 @@ export default function Dashboard() {
               </div>
 
               <div className="pt-6 mt-6 border-t border-stone-100 flex justify-end gap-3">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setIsModalOpen(false)}
                   className="px-6 py-3 rounded-full font-bold text-stone-600 hover:bg-stone-100 transition-colors"
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={isSubmitting}
                   className="bg-teal-500 hover:bg-teal-600 text-white px-8 py-3 rounded-full font-bold shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
@@ -469,20 +469,20 @@ export default function Dashboard() {
             <form onSubmit={handleWelcomeSubmit} className="p-6 md:p-8 space-y-6">
               <div className="space-y-2">
                 <label className="text-sm font-bold text-stone-700">Username <span className="text-red-500">*</span></label>
-                <input 
+                <input
                   required
-                  type="text" 
+                  type="text"
                   value={welcomeForm.username}
-                  onChange={(e) => setWelcomeForm({...welcomeForm, username: e.target.value})}
+                  onChange={(e) => setWelcomeForm({ ...welcomeForm, username: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-stone-50 focus:bg-white text-stone-800"
                   placeholder="e.g. janesmith"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-sm font-bold text-stone-700">Profile Picture <span className="text-stone-400 font-normal">(Optional)</span></label>
-                <input 
-                  type="file" 
+                <input
+                  type="file"
                   accept="image/*"
                   onChange={(e) => {
                     if (e.target.files && e.target.files[0]) {
@@ -497,8 +497,8 @@ export default function Dashboard() {
               </div>
 
               <div className="pt-4 flex justify-end">
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={isWelcomeSubmitting || !welcomeForm.username}
                   className="bg-teal-500 hover:bg-teal-600 text-white px-8 py-3 rounded-full font-bold shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 w-full justify-center"
                 >

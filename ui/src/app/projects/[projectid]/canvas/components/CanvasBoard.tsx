@@ -56,7 +56,7 @@ export default function CanvasBoard() {
     if (!projectId || !session?.id_token) return;
 
     // Fetch initial state first from the DB
-    fetch(`http://backend:8080/protected/api/canvas/${projectId}`, {
+    fetch(`/backend-api/protected/api/canvas/${projectId}`, {
       headers: {
         "Authorization": `Bearer ${session.id_token}`
       }
@@ -76,7 +76,7 @@ export default function CanvasBoard() {
         }
 
         // Initialize WebSockets connection directly to the protected wss route with token embedded in URL
-        const ws = new WebSocket(`http://backend:8080/protected/ws/canvas/${projectId}?token=${session.id_token}`);
+        const ws = new WebSocket(`/backend-api/protected/ws/canvas/${projectId}?token=${session.id_token}`);
         wsRef.current = ws;
 
         ws.onmessage = (event) => {

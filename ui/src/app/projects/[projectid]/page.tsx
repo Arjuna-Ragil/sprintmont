@@ -37,7 +37,7 @@ export default function ProjectDetailsPage() {
     const fetchProject = async () => {
       if (!session?.id_token || !projectId) return;
       try {
-        const res = await fetch(`http://backend:8080/protected/api/project/${projectId}`, {
+        const res = await fetch(`/backend-api/protected/api/project/${projectId}`, {
           headers: { Authorization: `Bearer ${session.id_token}` },
         });
         if (res.ok) {
@@ -87,7 +87,7 @@ export default function ProjectDetailsPage() {
         payload.append("banner_image", bannerFile);
       }
 
-      const res = await fetch(`http://backend:8080/protected/api/project/${projectId}`, {
+      const res = await fetch(`/backend-api/protected/api/project/${projectId}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${session.id_token}`,
