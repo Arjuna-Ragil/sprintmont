@@ -48,7 +48,6 @@ export default function ProjectLayout({ children }: { children: React.ReactNode 
     { href: `/projects/${projectId}`, label: "Overview", icon: Info },
     { href: `/projects/${projectId}/canvas`, label: "Canvas", icon: LayoutTemplate },
     { href: `/projects/${projectId}/progress`, label: "Tasks & Progress", icon: CheckSquare },
-    { href: `/projects/${projectId}/submission`, label: "Submission", icon: Send },
   ];
 
   return (
@@ -87,7 +86,7 @@ export default function ProjectLayout({ children }: { children: React.ReactNode 
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto bg-stone-50 z-50 border-t border-stone-500">
         {children}
       </main>
     </div>

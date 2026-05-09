@@ -394,30 +394,32 @@ export default function CanvasBoard() {
           onClick={() => setActiveTool("hand")}
         />
         <div className="w-px h-6 bg-slate-200 mx-1" />
-        <ToolButton
-          icon={<Square size={20} />}
-          label="Rectangle"
-          isActive={activeTool === "rectangle"}
-          onClick={() => setActiveTool("rectangle")}
-        />
-        <ToolButton
-          icon={<CircleIcon size={20} />}
-          label="Circle"
-          isActive={activeTool === "circle"}
-          onClick={() => setActiveTool("circle")}
-        />
-        <ToolButton
-          icon={<Triangle size={20} />}
-          label="Triangle"
-          isActive={activeTool === "triangle"}
-          onClick={() => setActiveTool("triangle")}
-        />
-        <ToolButton
-          icon={<MoveDiagonal size={20} />}
-          label="Arrow"
-          isActive={activeTool === "arrow"}
-          onClick={() => setActiveTool("arrow")}
-        />
+        <div className="flex flex-row items-center max-md:hidden">
+          <ToolButton
+            icon={<Square size={20} />}
+            label="Rectangle"
+            isActive={activeTool === "rectangle"}
+            onClick={() => setActiveTool("rectangle")}
+          />
+          <ToolButton
+            icon={<CircleIcon size={20} />}
+            label="Circle"
+            isActive={activeTool === "circle"}
+            onClick={() => setActiveTool("circle")}
+          />
+          <ToolButton
+            icon={<Triangle size={20} />}
+            label="Triangle"
+            isActive={activeTool === "triangle"}
+            onClick={() => setActiveTool("triangle")}
+          />
+          <ToolButton
+            icon={<MoveDiagonal size={20} />}
+            label="Arrow"
+            isActive={activeTool === "arrow"}
+            onClick={() => setActiveTool("arrow")}
+          />
+        </div>
         <div className="w-px h-6 bg-slate-200 mx-1" />
         <ToolButton
           icon={<Type size={20} />}

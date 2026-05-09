@@ -29,15 +29,17 @@ export default function Home() {
             <a className="text-stone-600 font-medium font-headline hover:text-[#00BCD4] hover:-rotate-1 transition-all duration-200" href="#features">Features</a>
             <a className="text-stone-600 font-medium font-headline hover:text-[#00BCD4] hover:-rotate-1 transition-all duration-200" href="#community">Community</a>
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 max-md:hidden">
             {!session && (
               <button onClick={() => signIn("authentik")} className="hidden sm:block text-stone-600 font-medium hover:text-primary">
                 Login
               </button>
             )}
-            <button onClick={handleStart} className="bg-primary text-on-primary px-6 py-2 rounded-full font-bold hover:scale-95 transition-transform">
+            {session && (
+              <button onClick={handleStart} className="bg-primary text-on-primary px-6 py-2 rounded-full font-bold hover:scale-95 transition-transform">
               {session ? "Go to Dashboard" : "Start Your Month"}
             </button>
+            )}
           </div>
         </nav>
       </header>
