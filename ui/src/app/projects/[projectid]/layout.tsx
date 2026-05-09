@@ -5,6 +5,7 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowLeft, LayoutTemplate, CheckSquare, Send, Info } from "lucide-react";
+import { API_BASE_URL } from "@/lib/config";
 
 export default function ProjectLayout({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
@@ -25,7 +26,7 @@ export default function ProjectLayout({ children }: { children: React.ReactNode 
     const fetchProjectName = async () => {
       if (!session?.id_token || !projectId) return;
       try {
-        const res = await fetch(`http://localhost:8080/protected/api/project/${projectId}`, {
+        const res = await fetch(`${API_BASE_URL}/protected/api/project/${projectId}`, {
           headers: { Authorization: `Bearer ${session.id_token}` },
         });
         if (res.ok) {

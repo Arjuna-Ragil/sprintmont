@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Plus, X, ListTodo, Circle, CheckCircle2, Clock } from "lucide-react";
+import { API_BASE_URL } from "@/lib/config";
 
 type Task = {
   id: string;
@@ -35,7 +36,7 @@ export default function ProgressPage() {
   const fetchTasks = async () => {
     if (!session?.id_token || !projectId) return;
     try {
-      const res = await fetch(`http://localhost:8080/protected/api/project/${projectId}/tasks`, {
+      const res = await fetch(`${API_BASE_URL}/protected/api/project/${projectId}/tasks`, {
         headers: { Authorization: `Bearer ${session.id_token}` },
       });
       if (res.ok) {
@@ -59,7 +60,7 @@ export default function ProgressPage() {
 
     setIsSubmitting(true);
     try {
-      const res = await fetch(`http://localhost:8080/protected/api/project/${projectId}/tasks`, {
+      const res = await fetch(`${API_BASE_URL}/protected/api/project/${projectId}/tasks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

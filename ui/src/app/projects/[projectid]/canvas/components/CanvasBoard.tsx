@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Stage, Layer, Rect, Circle, Text, RegularPolygon, Arrow } from "react-konva";
 import { Pointer, Hand, Square, Circle as CircleIcon, Type, Triangle, MoveDiagonal } from "lucide-react";
 import Konva from "konva";
+import { API_BASE_URL, WS_BASE_URL } from "@/lib/config";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 
@@ -56,7 +57,7 @@ export default function CanvasBoard() {
     if (!projectId || !session?.id_token) return;
 
     // Fetch initial state first from the DB
-    fetch(`http://localhost:8080/protected/api/canvas/${projectId}`, {
+    fetch(`${API_BASE_URL}/protected/api/canvas/${projectId}`, {
       headers: {
         "Authorization": `Bearer ${session.id_token}`
       }
@@ -76,7 +77,7 @@ export default function CanvasBoard() {
         }
 
         // Initialize WebSockets connection directly to the protected wss route with token embedded in URL
-        const ws = new WebSocket(`ws://localhost:8080/protected/ws/canvas/${projectId}?token=${session.id_token}`);
+        const ws = new WebSocket(`${WS_BASE_URL}/protected/ws/canvas/${projectId}?token=${session.id_token}`);
         wsRef.current = ws;
 
         ws.onmessage = (event) => {

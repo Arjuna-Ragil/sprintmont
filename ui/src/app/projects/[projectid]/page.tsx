@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ExternalLink, Code, MonitorPlay, Presentation, Pencil, X } from "lucide-react";
+import { API_BASE_URL } from "@/lib/config";
 
 type ProjectData = {
   id: string;
@@ -37,7 +38,7 @@ export default function ProjectDetailsPage() {
     const fetchProject = async () => {
       if (!session?.id_token || !projectId) return;
       try {
-        const res = await fetch(`http://localhost:8080/protected/api/project/${projectId}`, {
+        const res = await fetch(`${API_BASE_URL}/protected/api/project/${projectId}`, {
           headers: { Authorization: `Bearer ${session.id_token}` },
         });
         if (res.ok) {
@@ -87,7 +88,7 @@ export default function ProjectDetailsPage() {
         payload.append("banner_image", bannerFile);
       }
 
-      const res = await fetch(`http://localhost:8080/protected/api/project/${projectId}`, {
+      const res = await fetch(`${API_BASE_URL}/protected/api/project/${projectId}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${session.id_token}`,
