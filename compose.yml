@@ -59,6 +59,7 @@ services:
       - .env
     environment:
       - PORT=3000
+      - NEXT_PUBLIC_APP_ENV=production
     depends_on:
       - backend
     networks:
