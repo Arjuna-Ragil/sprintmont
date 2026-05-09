@@ -95,7 +95,7 @@ export default function Home() {
                   <div className="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]"></div>
                   <div className="w-3 h-3 rounded-full bg-[#27C93F] border border-[#1AAB29]"></div>
                 </div>
-                <div className="flex-1 flex justify-center hidden sm:flex opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <div className="flex-1 flex justify-center sm:flex opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                   <div className="bg-surface px-4 md:px-32 py-1.5 rounded-md text-xs font-mono text-on-surface-variant/60 flex items-center gap-2 border border-outline-variant/20">
                     <span className="material-symbols-outlined text-[14px]">lock</span>
                     app.sprintmont.com
