@@ -26,7 +26,7 @@ export default function ProjectLayout({ children }: { children: React.ReactNode 
     const fetchProjectName = async () => {
       if (!session?.id_token || !projectId) return;
       try {
-        const res = await fetch(`${API_BASE_URL}/protected/api/project/${projectId}`, {
+        const res = await fetch(`http://backend:8080/protected/api/project/${projectId}`, {
           headers: { Authorization: `Bearer ${session.id_token}` },
         });
         if (res.ok) {
@@ -74,11 +74,10 @@ export default function ProjectLayout({ children }: { children: React.ReactNode 
               <Link
                 key={link.href}
                 href={link.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-colors ${
-                  isActive 
-                    ? "bg-teal-50 text-teal-700" 
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-colors ${isActive
+                    ? "bg-teal-50 text-teal-700"
                     : "text-stone-600 hover:bg-stone-100"
-                }`}
+                  }`}
               >
                 <Icon size={20} />
                 {link.label}

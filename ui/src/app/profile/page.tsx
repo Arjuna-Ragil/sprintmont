@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, LogOut, User } from "lucide-react";
-import { API_BASE_URL } from "@/lib/config";
 
 type UserData = {
   ID: string;
@@ -39,12 +38,12 @@ export default function Profile() {
       if (!session?.id_token) return;
 
       try {
-        const userRes = await fetch(`${API_BASE_URL}/protected/api/me`, {
+        const userRes = await fetch(`http://backend:8080/protected/api/me`, {
           headers: {
             Authorization: `Bearer ${session.id_token}`,
           },
         });
-        
+
         if (userRes.ok) {
           const userDataRes = await userRes.json();
           setUserData(userDataRes.data);
@@ -73,7 +72,7 @@ export default function Profile() {
         payload.append("profile_picture", editFile);
       }
 
-      const res = await fetch(`${API_BASE_URL}/protected/api/me`, {
+      const res = await fetch(`http://backend:8080/protected/api/me`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${session.id_token}`,
@@ -84,7 +83,7 @@ export default function Profile() {
       if (res.ok) {
         setIsEditing(false);
         // Refresh User Data
-        const userRes = await fetch(`${API_BASE_URL}/protected/api/me`, {
+        const userRes = await fetch(`http://backend:8080/protected/api/me`, {
           headers: { Authorization: `Bearer ${session.id_token}` },
         });
         if (userRes.ok) {
@@ -124,14 +123,14 @@ export default function Profile() {
 
         <div className="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden">
           <div className="h-32 bg-linear-to-r from-teal-500 to-teal-400"></div>
-          
+
           <div className="px-8 pb-8 relative">
             <div className="absolute -top-16 left-8">
               {userData?.profile_url ? (
-                <img 
-                  src={userData.profile_url} 
-                  alt={userData.username} 
-                  className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md bg-white" 
+                <img
+                  src={userData.profile_url}
+                  alt={userData.username}
+                  className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md bg-white"
                 />
               ) : (
                 <div className="w-32 h-32 rounded-full bg-stone-100 flex items-center justify-center border-4 border-white shadow-md">
@@ -145,18 +144,18 @@ export default function Profile() {
                 <form onSubmit={handleEditSubmit} className="space-y-4 mb-8">
                   <div>
                     <label className="block text-sm font-bold text-stone-700 mb-1">Username <span className="text-red-500">*</span></label>
-                    <input 
+                    <input
                       required
-                      type="text" 
+                      type="text"
                       value={editForm.username}
-                      onChange={(e) => setEditForm({...editForm, username: e.target.value})}
+                      onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-stone-50 focus:bg-white text-stone-800 font-bold"
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-stone-700 mb-1">Profile Picture</label>
-                    <input 
-                      type="file" 
+                    <input
+                      type="file"
                       accept="image/*"
                       onChange={(e) => {
                         if (e.target.files && e.target.files[0]) {
@@ -170,15 +169,15 @@ export default function Profile() {
                     )}
                   </div>
                   <div className="flex gap-3 pt-2">
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       onClick={() => setIsEditing(false)}
                       className="px-6 py-2.5 rounded-full font-bold text-stone-600 hover:bg-stone-100 transition-colors"
                     >
                       Cancel
                     </button>
-                    <button 
-                      type="submit" 
+                    <button
+                      type="submit"
                       disabled={isSubmitting || !editForm.username}
                       className="bg-teal-500 hover:bg-teal-600 text-white px-8 py-2.5 rounded-full font-bold shadow-md hover:shadow-lg transition-all disabled:opacity-50 flex items-center gap-2"
                     >
@@ -196,7 +195,7 @@ export default function Profile() {
                       {userData?.email || "No email available"}
                     </p>
                   </div>
-                  <button 
+                  <button
                     onClick={() => {
                       setEditForm({
                         username: userData?.username || "",
@@ -213,7 +212,7 @@ export default function Profile() {
 
               <div className="border-t border-stone-100 pt-8 mt-8">
                 <h3 className="text-lg font-bold text-stone-800 mb-4">Account Settings</h3>
-                
+
                 <div className="space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-stone-50 rounded-xl border border-stone-100 gap-4">
                     <div>
@@ -228,8 +227,8 @@ export default function Profile() {
               </div>
 
               <div className="mt-12 flex justify-end">
-                <button 
-                  onClick={() => signOut({ callbackUrl: "/" })} 
+                <button
+                  onClick={() => signOut({ callbackUrl: "/" })}
                   className="flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 px-6 py-3 rounded-xl font-bold transition-colors w-full sm:w-auto"
                 >
                   <LogOut size={20} />

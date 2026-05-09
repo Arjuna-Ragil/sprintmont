@@ -4,7 +4,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { Stage, Layer, Rect, Circle, Text, RegularPolygon, Arrow } from "react-konva";
 import { Pointer, Hand, Square, Circle as CircleIcon, Type, Triangle, MoveDiagonal } from "lucide-react";
 import Konva from "konva";
-import { API_BASE_URL, WS_BASE_URL } from "@/lib/config";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 
@@ -34,7 +33,7 @@ export default function CanvasBoard() {
   const [editingTextId, setEditingTextId] = useState<string | null>(null);
   const [textEditValue, setTextEditValue] = useState("");
   const [textEditPos, setTextEditPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
-  
+
   // Use a ref to ensure event handlers have the very latest items without re-subscribing.
   const itemsRef = useRef(items);
   useEffect(() => {
@@ -57,7 +56,7 @@ export default function CanvasBoard() {
     if (!projectId || !session?.id_token) return;
 
     // Fetch initial state first from the DB
-    fetch(`${API_BASE_URL}/protected/api/canvas/${projectId}`, {
+    fetch(`http://backend:8080/protected/api/canvas/${projectId}`, {
       headers: {
         "Authorization": `Bearer ${session.id_token}`
       }
@@ -67,17 +66,17 @@ export default function CanvasBoard() {
         if (resData?.data?.elements) {
           let parsed = [];
           if (typeof resData.data.elements === "string" && resData.data.elements.length > 0) {
-            try { parsed = JSON.parse(resData.data.elements); } catch (e) {}
+            try { parsed = JSON.parse(resData.data.elements); } catch (e) { }
           } else if (Array.isArray(resData.data.elements)) {
             parsed = resData.data.elements;
           }
           if (parsed.length > 0) {
-             setItems(parsed);
+            setItems(parsed);
           }
         }
 
         // Initialize WebSockets connection directly to the protected wss route with token embedded in URL
-        const ws = new WebSocket(`${WS_BASE_URL}/protected/ws/canvas/${projectId}?token=${session.id_token}`);
+        const ws = new WebSocket(`http://backend:8080/protected/ws/canvas/${projectId}?token=${session.id_token}`);
         wsRef.current = ws;
 
         ws.onmessage = (event) => {
@@ -92,7 +91,7 @@ export default function CanvasBoard() {
         };
       })
       .catch(err => {
-         console.error("Failed to load initial Canvas state:", err);
+        console.error("Failed to load initial Canvas state:", err);
       });
 
     return () => {
@@ -102,9 +101,9 @@ export default function CanvasBoard() {
 
   // Function to push updates to the WebSocket server
   const wsBroadcast = (payloadItems: CanvasItem[]) => {
-     if (wsRef.current?.readyState === WebSocket.OPEN) {
-         wsRef.current.send(JSON.stringify(payloadItems));
-     }
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify(payloadItems));
+    }
   };
 
   useEffect(() => {
@@ -125,7 +124,7 @@ export default function CanvasBoard() {
 
   const handleMouseDown = (e: any) => {
     if (activeTool === "pointer" || activeTool === "hand") {
-      return; 
+      return;
     }
 
     const stage = e.target.getStage();
@@ -151,8 +150,8 @@ export default function CanvasBoard() {
       newItem = { ...newItem, type: "arrow", points: [point.x, point.y, point.x, point.y] };
     } else if (activeTool === "text") {
       newItem = { ...newItem, type: "text", text: "Double click to edit text", color: selectedColor };
-      setIsDrawing(false); 
-      
+      setIsDrawing(false);
+
       const newItems = [...itemsRef.current, newItem];
       setItems(newItems);
       wsBroadcast(newItems); // Broadcast immediately since it is fire-and-forget
@@ -173,7 +172,7 @@ export default function CanvasBoard() {
 
     setItems((prevItems) => {
       const lastItem = { ...prevItems[prevItems.length - 1] };
-      
+
       if (lastItem.type === "rectangle") {
         lastItem.width = point.x - lastItem.x;
         lastItem.height = point.y - lastItem.y;
@@ -184,7 +183,7 @@ export default function CanvasBoard() {
       } else if (lastItem.type === "arrow") {
         lastItem.points = [lastItem.points![0], lastItem.points![1], point.x, point.y];
       }
-      
+
       const newItems = [...prevItems];
       newItems[newItems.length - 1] = lastItem;
       return newItems;
@@ -193,8 +192,8 @@ export default function CanvasBoard() {
 
   const handleMouseUp = () => {
     if (isDrawing) {
-       // Broadcast shapes that just finished being drawn
-       wsBroadcast(itemsRef.current);
+      // Broadcast shapes that just finished being drawn
+      wsBroadcast(itemsRef.current);
     }
     setIsDrawing(false);
   };
@@ -202,20 +201,20 @@ export default function CanvasBoard() {
   const handleDragEnd = (e: any, id: string) => {
     const node = e.target;
     const newItems = itemsRef.current.map(item => {
-       if (item.id === id) {
-           return { ...item, x: node.x(), y: node.y() };
-       }
-       return item;
+      if (item.id === id) {
+        return { ...item, x: node.x(), y: node.y() };
+      }
+      return item;
     });
     setItems(newItems);
     wsBroadcast(newItems);
   };
-  
+
   const handleWheel = (e: any) => {
     e.evt.preventDefault();
     const stage = stageRef.current;
     if (!stage) return;
-    
+
     const oldScale = stage.scaleX();
     const pointer = stage.getPointerPosition();
     if (!pointer) return;
@@ -228,7 +227,7 @@ export default function CanvasBoard() {
     const scaleBy = 1.05;
     const direction = e.evt.deltaY > 0 ? -1 : 1;
     let newScale = direction > 0 ? oldScale * scaleBy : oldScale / scaleBy;
-    
+
     newScale = Math.max(0.1, Math.min(newScale, 10));
     stage.scale({ x: newScale, y: newScale });
 
@@ -256,7 +255,7 @@ export default function CanvasBoard() {
           <Layer>
             {items.map((item) => {
               const isDraggable = activeTool === "pointer";
-              
+
               if (item.type === "rectangle") {
                 return (
                   <Rect
@@ -326,21 +325,21 @@ export default function CanvasBoard() {
                     visible={editingTextId !== item.id}
                     onDragEnd={(e) => handleDragEnd(e, item.id)}
                     onDblClick={(e) => {
-                       if (activeTool === "pointer") {
-                           const textNode = e.target;
-                           const stage = stageRef.current;
-                           if (!stage) return;
-                           
-                           const textPosition = textNode.absolutePosition();
-                           setTextEditValue(item.text || "");
-                           setEditingTextId(item.id);
-                           setTextEditPos({
-                             x: textPosition.x,
-                             y: textPosition.y,
-                             width: Math.max(textNode.width() * stage.scaleX(), 200),
-                             height: Math.max(textNode.height() * stage.scaleY(), 40),
-                           });
-                       }
+                      if (activeTool === "pointer") {
+                        const textNode = e.target;
+                        const stage = stageRef.current;
+                        if (!stage) return;
+
+                        const textPosition = textNode.absolutePosition();
+                        setTextEditValue(item.text || "");
+                        setEditingTextId(item.id);
+                        setTextEditPos({
+                          x: textPosition.x,
+                          y: textPosition.y,
+                          width: Math.max(textNode.width() * stage.scaleX(), 200),
+                          height: Math.max(textNode.height() * stage.scaleY(), 40),
+                        });
+                      }
                     }}
                   />
                 );
@@ -362,10 +361,10 @@ export default function CanvasBoard() {
             }
           }}
           onBlur={() => {
-             const newItems = itemsRef.current.map(i => i.id === editingTextId ? { ...i, text: textEditValue } : i);
-             setItems(newItems);
-             wsBroadcast(newItems);
-             setEditingTextId(null);
+            const newItems = itemsRef.current.map(i => i.id === editingTextId ? { ...i, text: textEditValue } : i);
+            setItems(newItems);
+            wsBroadcast(newItems);
+            setEditingTextId(null);
           }}
           autoFocus
           className="absolute z-50 bg-transparent border border-teal-500 rounded p-1 outline-none resize-none font-sans"
@@ -382,55 +381,55 @@ export default function CanvasBoard() {
 
       {/* Hotbar */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white px-2 py-2 rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.1)] border border-slate-100 flex items-center gap-1">
-        <ToolButton 
-          icon={<Pointer size={20} />} 
-          label="Select" 
-          isActive={activeTool === "pointer"} 
-          onClick={() => setActiveTool("pointer")} 
+        <ToolButton
+          icon={<Pointer size={20} />}
+          label="Select"
+          isActive={activeTool === "pointer"}
+          onClick={() => setActiveTool("pointer")}
         />
-        <ToolButton 
-          icon={<Hand size={20} />} 
-          label="Pan" 
-          isActive={activeTool === "hand"} 
-          onClick={() => setActiveTool("hand")} 
-        />
-        <div className="w-px h-6 bg-slate-200 mx-1" />
-        <ToolButton 
-          icon={<Square size={20} />} 
-          label="Rectangle" 
-          isActive={activeTool === "rectangle"} 
-          onClick={() => setActiveTool("rectangle")} 
-        />
-        <ToolButton 
-          icon={<CircleIcon size={20} />} 
-          label="Circle" 
-          isActive={activeTool === "circle"} 
-          onClick={() => setActiveTool("circle")} 
-        />
-        <ToolButton 
-          icon={<Triangle size={20} />} 
-          label="Triangle" 
-          isActive={activeTool === "triangle"} 
-          onClick={() => setActiveTool("triangle")} 
-        />
-        <ToolButton 
-          icon={<MoveDiagonal size={20} />} 
-          label="Arrow" 
-          isActive={activeTool === "arrow"} 
-          onClick={() => setActiveTool("arrow")} 
+        <ToolButton
+          icon={<Hand size={20} />}
+          label="Pan"
+          isActive={activeTool === "hand"}
+          onClick={() => setActiveTool("hand")}
         />
         <div className="w-px h-6 bg-slate-200 mx-1" />
-        <ToolButton 
-          icon={<Type size={20} />} 
-          label="Text" 
-          isActive={activeTool === "text"} 
-          onClick={() => setActiveTool("text")} 
+        <ToolButton
+          icon={<Square size={20} />}
+          label="Rectangle"
+          isActive={activeTool === "rectangle"}
+          onClick={() => setActiveTool("rectangle")}
+        />
+        <ToolButton
+          icon={<CircleIcon size={20} />}
+          label="Circle"
+          isActive={activeTool === "circle"}
+          onClick={() => setActiveTool("circle")}
+        />
+        <ToolButton
+          icon={<Triangle size={20} />}
+          label="Triangle"
+          isActive={activeTool === "triangle"}
+          onClick={() => setActiveTool("triangle")}
+        />
+        <ToolButton
+          icon={<MoveDiagonal size={20} />}
+          label="Arrow"
+          isActive={activeTool === "arrow"}
+          onClick={() => setActiveTool("arrow")}
+        />
+        <div className="w-px h-6 bg-slate-200 mx-1" />
+        <ToolButton
+          icon={<Type size={20} />}
+          label="Text"
+          isActive={activeTool === "text"}
+          onClick={() => setActiveTool("text")}
         />
         <div className="w-px h-6 bg-slate-200 mx-1" />
         <div className="flex items-center justify-center p-1">
-          <input 
-            type="color" 
-            value={selectedColor} 
+          <input
+            type="color"
+            value={selectedColor}
             onChange={(e) => setSelectedColor(e.target.value)}
             className="w-8 h-8 rounded cursor-pointer border-0 p-0"
             title="Choose Color"

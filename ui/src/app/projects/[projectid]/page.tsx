@@ -38,7 +38,7 @@ export default function ProjectDetailsPage() {
     const fetchProject = async () => {
       if (!session?.id_token || !projectId) return;
       try {
-        const res = await fetch(`${API_BASE_URL}/protected/api/project/${projectId}`, {
+        const res = await fetch(`http://backend:8080/protected/api/project/${projectId}`, {
           headers: { Authorization: `Bearer ${session.id_token}` },
         });
         if (res.ok) {
@@ -88,7 +88,7 @@ export default function ProjectDetailsPage() {
         payload.append("banner_image", bannerFile);
       }
 
-      const res = await fetch(`${API_BASE_URL}/protected/api/project/${projectId}`, {
+      const res = await fetch(`http://backend:8080/protected/api/project/${projectId}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${session.id_token}`,
@@ -148,7 +148,7 @@ export default function ProjectDetailsPage() {
       <div className="mb-12">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
           <h1 className="text-4xl md:text-5xl font-black text-stone-800 tracking-tight">{project.title}</h1>
-          <button 
+          <button
             onClick={handleEditOpen}
             className="bg-white border border-stone-200 text-stone-700 hover:bg-stone-50 px-5 py-2.5 rounded-full font-bold shadow-sm transition-colors text-sm flex items-center gap-2"
           >
@@ -225,20 +225,20 @@ export default function ProjectDetailsPage() {
             <form onSubmit={handleEditSubmit} className="p-6 md:p-8 space-y-6">
               <div className="space-y-2">
                 <label className="text-sm font-bold text-stone-700">Project Title <span className="text-red-500">*</span></label>
-                <input 
+                <input
                   required
-                  type="text" 
+                  type="text"
                   value={formData.title}
-                  onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-stone-50 focus:bg-white text-stone-800"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-sm font-bold text-stone-700">Description</label>
-                <textarea 
+                <textarea
                   value={formData.desc}
-                  onChange={(e) => setFormData({...formData, desc: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, desc: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-stone-50 focus:bg-white text-stone-800 resize-none h-24"
                 />
               </div>
@@ -246,19 +246,19 @@ export default function ProjectDetailsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-stone-700">GitHub URL</label>
-                  <input 
-                    type="url" 
+                  <input
+                    type="url"
                     value={formData.github}
-                    onChange={(e) => setFormData({...formData, github: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, github: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-stone-50 focus:bg-white text-stone-800"
                   />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-stone-700">Demo URL</label>
-                  <input 
-                    type="url" 
+                  <input
+                    type="url"
                     value={formData.demo}
-                    onChange={(e) => setFormData({...formData, demo: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, demo: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-stone-50 focus:bg-white text-stone-800"
                   />
                 </div>
@@ -267,17 +267,17 @@ export default function ProjectDetailsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-stone-700">Pitch Deck URL</label>
-                  <input 
-                    type="url" 
+                  <input
+                    type="url"
                     value={formData.pitch_deck}
-                    onChange={(e) => setFormData({...formData, pitch_deck: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, pitch_deck: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-stone-50 focus:bg-white text-stone-800"
                   />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-stone-700">Banner Image</label>
-                  <input 
-                    type="file" 
+                  <input
+                    type="file"
                     accept="image/*"
                     onChange={(e) => {
                       if (e.target.files && e.target.files[0]) {
@@ -299,7 +299,7 @@ export default function ProjectDetailsPage() {
                       id="active-edit"
                       type="checkbox"
                       checked={formData.active}
-                      onChange={(e) => setFormData({...formData, active: e.target.checked})}
+                      onChange={(e) => setFormData({ ...formData, active: e.target.checked })}
                       className="w-5 h-5 text-teal-600 border-stone-300 rounded focus:ring-teal-500/20 cursor-pointer"
                     />
                   </div>
@@ -311,15 +311,15 @@ export default function ProjectDetailsPage() {
               </div>
 
               <div className="pt-6 mt-6 border-t border-stone-100 flex justify-end gap-3">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setIsEditModalOpen(false)}
                   className="px-6 py-3 rounded-full font-bold text-stone-600 hover:bg-stone-100 transition-colors"
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={isSubmitting}
                   className="bg-teal-500 hover:bg-teal-600 text-white px-8 py-3 rounded-full font-bold shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >

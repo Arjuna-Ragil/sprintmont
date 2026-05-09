@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Plus, LayoutDashboard, Rocket, Settings, LogOut, ArrowRight, FolderPlus, X } from "lucide-react";
-import { API_BASE_URL } from "@/lib/config";
 
 type Project = {
   id: string;
@@ -60,7 +59,7 @@ export default function Dashboard() {
   const fetchProjects = async () => {
     if (!session?.id_token) return;
     try {
-      const projectRes = await fetch(`${API_BASE_URL}/protected/api/project`, {
+      const projectRes = await fetch(`http://backend:8080/protected/api/project`, {
         headers: {
           Authorization: `Bearer ${session.id_token}`,
         },
@@ -91,7 +90,7 @@ export default function Dashboard() {
         payload.append("banner_image", bannerFile);
       }
 
-      const res = await fetch(`${API_BASE_URL}/protected/api/project`, {
+      const res = await fetch(`http://backend:8080/protected/api/project`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${session.id_token}`,
@@ -134,7 +133,7 @@ export default function Dashboard() {
         payload.append("profile_picture", welcomeFile);
       }
 
-      const res = await fetch(`${API_BASE_URL}/protected/api/me`, {
+      const res = await fetch(`http://backend:8080/protected/api/me`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${session.id_token}`,
@@ -145,7 +144,7 @@ export default function Dashboard() {
       if (res.ok) {
         setShowWelcomeModal(false);
         // Refresh User Data
-        const userRes = await fetch(`${API_BASE_URL}/protected/api/me`, {
+        const userRes = await fetch(`http://backend:8080/protected/api/me`, {
           headers: { Authorization: `Bearer ${session.id_token}` },
         });
         if (userRes.ok) {
@@ -174,7 +173,7 @@ export default function Dashboard() {
 
       try {
         // Fetch User Data
-        const userRes = await fetch(`${API_BASE_URL}/protected/api/me`, {
+        const userRes = await fetch(`http://backend:8080/protected/api/me`, {
           headers: {
             Authorization: `Bearer ${session.id_token}`,
           },
@@ -189,7 +188,7 @@ export default function Dashboard() {
         }
 
         // Fetch Projects
-        const projectRes = await fetch(`${API_BASE_URL}/protected/api/project`, {
+        const projectRes = await fetch(`http://backend:8080/protected/api/project`, {
           headers: {
             Authorization: `Bearer ${session.id_token}`,
           },

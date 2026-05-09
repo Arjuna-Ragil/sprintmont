@@ -36,7 +36,7 @@ export default function ProgressPage() {
   const fetchTasks = async () => {
     if (!session?.id_token || !projectId) return;
     try {
-      const res = await fetch(`${API_BASE_URL}/protected/api/project/${projectId}/tasks`, {
+      const res = await fetch(`http://backend:8080/protected/api/project/${projectId}/tasks`, {
         headers: { Authorization: `Bearer ${session.id_token}` },
       });
       if (res.ok) {
@@ -60,7 +60,7 @@ export default function ProgressPage() {
 
     setIsSubmitting(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/protected/api/project/${projectId}/tasks`, {
+      const res = await fetch(`http://backend:8080/protected/api/project/${projectId}/tasks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -110,7 +110,7 @@ export default function ProgressPage() {
           <h1 className="text-3xl font-black text-stone-800 tracking-tight">Tasks & Progress</h1>
           <p className="text-stone-500 font-medium mt-1">Track your sprint progress and milestones.</p>
         </div>
-        <button 
+        <button
           onClick={() => setIsModalOpen(true)}
           className="bg-teal-500 hover:bg-teal-600 text-white px-5 py-2.5 rounded-full font-bold flex items-center gap-2 shadow-sm transition-all hover:-translate-y-0.5"
         >
@@ -129,7 +129,7 @@ export default function ProgressPage() {
           <p className="text-stone-500 max-w-sm mb-6">
             Break down your project into actionable tasks to keep your sprint on track.
           </p>
-          <button 
+          <button
             onClick={() => setIsModalOpen(true)}
             className="bg-white border border-stone-200 text-stone-700 hover:bg-stone-50 px-6 py-2.5 rounded-full font-bold shadow-sm transition-colors"
           >
@@ -157,11 +157,10 @@ export default function ProgressPage() {
                 )}
               </div>
               <div className="shrink-0 self-start sm:self-auto">
-                <span className={`text-xs font-bold px-3 py-1 rounded-full border ${
-                  task.status === 'Done' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
-                  task.status === 'In Progress' ? 'bg-orange-50 border-orange-200 text-orange-700' :
-                  'bg-stone-50 border-stone-200 text-stone-600'
-                }`}>
+                <span className={`text-xs font-bold px-3 py-1 rounded-full border ${task.status === 'Done' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
+                    task.status === 'In Progress' ? 'bg-orange-50 border-orange-200 text-orange-700' :
+                      'bg-stone-50 border-stone-200 text-stone-600'
+                  }`}>
                   {task.status}
                 </span>
               </div>
@@ -183,21 +182,21 @@ export default function ProgressPage() {
             <form onSubmit={handleCreateTask} className="p-6 md:p-8 space-y-6">
               <div className="space-y-2">
                 <label className="text-sm font-bold text-stone-700">Task Title <span className="text-red-500">*</span></label>
-                <input 
+                <input
                   required
-                  type="text" 
+                  type="text"
                   value={formData.title}
-                  onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-stone-50 focus:bg-white text-stone-800"
                   placeholder="e.g. Design Database Schema"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-sm font-bold text-stone-700">Description</label>
-                <textarea 
+                <textarea
                   value={formData.desc}
-                  onChange={(e) => setFormData({...formData, desc: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, desc: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-stone-50 focus:bg-white text-stone-800 resize-none h-24"
                   placeholder="Additional details..."
                 />
@@ -206,9 +205,9 @@ export default function ProgressPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-stone-700">Sprint Week</label>
-                  <select 
+                  <select
                     value={formData.week}
-                    onChange={(e) => setFormData({...formData, week: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, week: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-stone-50 focus:bg-white text-stone-800 appearance-none"
                   >
                     <option value="Week 1">Week 1</option>
@@ -219,9 +218,9 @@ export default function ProgressPage() {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-stone-700">Status</label>
-                  <select 
+                  <select
                     value={formData.status}
-                    onChange={(e) => setFormData({...formData, status: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all bg-stone-50 focus:bg-white text-stone-800 appearance-none"
                   >
                     <option value="To Do">To Do</option>
@@ -232,15 +231,15 @@ export default function ProgressPage() {
               </div>
 
               <div className="pt-6 mt-6 border-t border-stone-100 flex justify-end gap-3">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setIsModalOpen(false)}
                   className="px-6 py-3 rounded-full font-bold text-stone-600 hover:bg-stone-100 transition-colors"
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={isSubmitting}
                   className="bg-teal-500 hover:bg-teal-600 text-white px-8 py-3 rounded-full font-bold shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
