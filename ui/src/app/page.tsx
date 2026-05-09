@@ -86,7 +86,7 @@ export default function Home() {
             </div>
 
             {/* Browser/Dashboard Frame */}
-            <div className="bg-surface-container-lowest rounded-[24px] md:rounded-[32px] overflow-hidden border border-outline-variant/30 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] flex flex-col w-full h-[450px] md:h-[600px] transform rotate-[-1deg] origin-bottom-left transition-all duration-700 hover:rotate-0 hover:shadow-[0_40px_70px_-15px_rgba(0,0,0,0.15)] group">
+            <div className="bg-surface-container-lowest rounded-[24px] md:rounded-[32px] overflow-hidden border border-outline-variant/30 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] flex flex-col w-full h-[450px] md:h-[600px] transform -rotate-1 origin-bottom-left transition-all duration-700 hover:rotate-0 hover:shadow-[0_40px_70px_-15px_rgba(0,0,0,0.15)] group">
               
               {/* Browser Header */}
               <div className="h-10 md:h-12 bg-surface-container flex items-center px-4 md:px-6 border-b border-outline-variant/20 gap-4">
