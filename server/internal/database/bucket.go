@@ -10,15 +10,19 @@ import (
 	"github.com/minio/minio-go/v7"
 )
 
-type Bucket struct {
+type BucketRepo struct {
 	Client *minio.Client
 }
 
-func (repo *Bucket) UploadFile(file *multipart.FileHeader, bucketName string) (string, error) {
+func NewBucketRepo(client *minio.Client) *BucketRepo {
+	return &BucketRepo{Client: client}
+}
+
+func (repo *BucketRepo) UploadFile(file *multipart.FileHeader, bucketName string) (string, error) {
 	ctx := context.Background()
 	publicDomain := os.Getenv("BUCKET_PUBLIC_DOMAIN")
 	if publicDomain == "" {
-		publicDomain = "http://localhost:8335"
+		publicDomain = "http://localhost:8333"
 	}
 
 	src, err := file.Open()

@@ -1,31 +1,38 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Stage, Layer, Rect, Circle, Text } from "react-konva";
-import { Pointer, Hand, Square, Circle as CircleIcon, Type } from "lucide-react";
+import { Stage, Layer, Rect, Circle, Text, RegularPolygon, Arrow } from "react-konva";
+import { Pointer, Hand, Square, Circle as CircleIcon, Type, Triangle, MoveDiagonal } from "lucide-react";
 import Konva from "konva";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 
-type ToolType = "pointer" | "hand" | "rectangle" | "circle" | "text";
+type ToolType = "pointer" | "hand" | "rectangle" | "circle" | "text" | "triangle" | "arrow";
 
 interface CanvasItem {
   id: string;
-  type: "rectangle" | "circle" | "text";
+  type: "rectangle" | "circle" | "text" | "triangle" | "arrow";
   x: number;
   y: number;
   width?: number;
   height?: number;
   radius?: number;
+  points?: number[]; // For arrows
   text?: string;
   color: string;
 }
 
 export default function CanvasBoard() {
   const [activeTool, setActiveTool] = useState<ToolType>("hand");
+  const [selectedColor, setSelectedColor] = useState<string>("#2563eb");
   const [items, setItems] = useState<CanvasItem[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
   const stageRef = useRef<Konva.Stage>(null);
+
+  // Inline Text Edit State
+  const [editingTextId, setEditingTextId] = useState<string | null>(null);
+  const [textEditValue, setTextEditValue] = useState("");
+  const [textEditPos, setTextEditPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
   
   // Use a ref to ensure event handlers have the very latest items without re-subscribing.
   const itemsRef = useRef(items);
@@ -132,15 +139,17 @@ export default function CanvasBoard() {
       type: "rectangle",
       x: point.x,
       y: point.y,
-      color: "#2563eb",
+      color: selectedColor,
     };
 
     if (activeTool === "rectangle") {
       newItem = { ...newItem, type: "rectangle", width: 0, height: 0 };
-    } else if (activeTool === "circle") {
-      newItem = { ...newItem, type: "circle", radius: 0 };
+    } else if (activeTool === "circle" || activeTool === "triangle") {
+      newItem = { ...newItem, type: activeTool, radius: 0 };
+    } else if (activeTool === "arrow") {
+      newItem = { ...newItem, type: "arrow", points: [point.x, point.y, point.x, point.y] };
     } else if (activeTool === "text") {
-      newItem = { ...newItem, type: "text", text: "Double click to edit text", color: "#000000" };
+      newItem = { ...newItem, type: "text", text: "Double click to edit text", color: selectedColor };
       setIsDrawing(false); 
       
       const newItems = [...itemsRef.current, newItem];
@@ -167,10 +176,12 @@ export default function CanvasBoard() {
       if (lastItem.type === "rectangle") {
         lastItem.width = point.x - lastItem.x;
         lastItem.height = point.y - lastItem.y;
-      } else if (lastItem.type === "circle") {
+      } else if (lastItem.type === "circle" || lastItem.type === "triangle") {
         const dx = point.x - lastItem.x;
         const dy = point.y - lastItem.y;
         lastItem.radius = Math.sqrt(dx * dx + dy * dy);
+      } else if (lastItem.type === "arrow") {
+        lastItem.points = [lastItem.points![0], lastItem.points![1], point.x, point.y];
       }
       
       const newItems = [...prevItems];
@@ -272,6 +283,35 @@ export default function CanvasBoard() {
                   />
                 );
               }
+              if (item.type === "triangle") {
+                return (
+                  <RegularPolygon
+                    key={item.id}
+                    x={item.x}
+                    y={item.y}
+                    sides={3}
+                    radius={item.radius || 0}
+                    fill={item.color}
+                    draggable={isDraggable}
+                    onDragEnd={(e) => handleDragEnd(e, item.id)}
+                  />
+                );
+              }
+              if (item.type === "arrow") {
+                return (
+                  <Arrow
+                    key={item.id}
+                    points={item.points || []}
+                    stroke={item.color}
+                    strokeWidth={4}
+                    fill={item.color}
+                    pointerLength={10}
+                    pointerWidth={10}
+                    draggable={isDraggable}
+                    onDragEnd={(e) => handleDragEnd(e, item.id)}
+                  />
+                );
+              }
               if (item.type === "text") {
                 return (
                   <Text
@@ -282,15 +322,23 @@ export default function CanvasBoard() {
                     fontSize={24}
                     fill={item.color}
                     draggable={isDraggable}
+                    visible={editingTextId !== item.id}
                     onDragEnd={(e) => handleDragEnd(e, item.id)}
                     onDblClick={(e) => {
                        if (activeTool === "pointer") {
-                           const newText = prompt("Enter text:", item.text);
-                           if (newText !== null) {
-                               const newItems = itemsRef.current.map(i => i.id === item.id ? { ...i, text: newText } : i);
-                               setItems(newItems);
-                               wsBroadcast(newItems);
-                           }
+                           const textNode = e.target;
+                           const stage = stageRef.current;
+                           if (!stage) return;
+                           
+                           const textPosition = textNode.absolutePosition();
+                           setTextEditValue(item.text || "");
+                           setEditingTextId(item.id);
+                           setTextEditPos({
+                             x: textPosition.x,
+                             y: textPosition.y,
+                             width: Math.max(textNode.width() * stage.scaleX(), 200),
+                             height: Math.max(textNode.height() * stage.scaleY(), 40),
+                           });
                        }
                     }}
                   />
@@ -300,6 +348,35 @@ export default function CanvasBoard() {
             })}
           </Layer>
         </Stage>
+      )}
+
+      {/* Inline Text Editor */}
+      {editingTextId && (
+        <textarea
+          value={textEditValue}
+          onChange={(e) => setTextEditValue(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") {
+              setEditingTextId(null);
+            }
+          }}
+          onBlur={() => {
+             const newItems = itemsRef.current.map(i => i.id === editingTextId ? { ...i, text: textEditValue } : i);
+             setItems(newItems);
+             wsBroadcast(newItems);
+             setEditingTextId(null);
+          }}
+          autoFocus
+          className="absolute z-50 bg-transparent border border-teal-500 rounded p-1 outline-none resize-none font-sans"
+          style={{
+            top: `${textEditPos.y}px`,
+            left: `${textEditPos.x}px`,
+            width: `${textEditPos.width + 20}px`,
+            height: `${textEditPos.height + 20}px`,
+            fontSize: `${24 * (stageRef.current?.scaleX() || 1)}px`,
+            color: itemsRef.current.find(i => i.id === editingTextId)?.color || "#000",
+          }}
+        />
       )}
 
       {/* Hotbar */}
@@ -330,11 +407,34 @@ export default function CanvasBoard() {
           onClick={() => setActiveTool("circle")} 
         />
         <ToolButton 
+          icon={<Triangle size={20} />} 
+          label="Triangle" 
+          isActive={activeTool === "triangle"} 
+          onClick={() => setActiveTool("triangle")} 
+        />
+        <ToolButton 
+          icon={<MoveDiagonal size={20} />} 
+          label="Arrow" 
+          isActive={activeTool === "arrow"} 
+          onClick={() => setActiveTool("arrow")} 
+        />
+        <div className="w-px h-6 bg-slate-200 mx-1" />
+        <ToolButton 
           icon={<Type size={20} />} 
           label="Text" 
           isActive={activeTool === "text"} 
           onClick={() => setActiveTool("text")} 
         />
+        <div className="w-px h-6 bg-slate-200 mx-1" />
+        <div className="flex items-center justify-center p-1">
+          <input 
+            type="color" 
+            value={selectedColor} 
+            onChange={(e) => setSelectedColor(e.target.value)}
+            className="w-8 h-8 rounded cursor-pointer border-0 p-0"
+            title="Choose Color"
+          />
+        </div>
       </div>
     </div>
   );

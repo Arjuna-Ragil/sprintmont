@@ -10,7 +10,7 @@ export default function Home() {
 
   const handleStart = () => {
     if (session) {
-      router.push('/projects/new');
+      router.push('/dashboard');
     } else {
       signIn("authentik");
     }

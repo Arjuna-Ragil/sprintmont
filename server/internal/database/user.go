@@ -20,3 +20,10 @@ func (r *UserRepo) GetUser(id string) (*models.User, error){
 	}
 	return &user, nil
 }
+
+func (r *UserRepo) UpdateUser(user *models.User) (*models.User, error){
+	err := r.DB.Gorm.Save(user).Error; if err != nil{
+		return nil, err
+	}
+	return user, nil
+}

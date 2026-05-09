@@ -11,7 +11,8 @@ type Deps struct {
 	WS *websocket.CanvasHandler
 	Canvas *handlers.CanvasHandler
 	Project *handlers.ProjectHandler
-	User *handlers.UserHandler
+	Task    *handlers.TaskHandler
+	User    *handlers.UserHandler
 	AuthMiddleware *middleware.AuthDB
 }
 
@@ -22,9 +23,15 @@ func SetupRouter(r *gin.Engine, d Deps){
 		api := Protected.Group("/api")
 		{
 			api.GET("/me", d.User.GetUser)
+			api.PUT("/me", d.User.UpdateUser)
 
-			api.GET("/project/:project_id", d.Project.GetProject)
+			api.GET("/project", d.Project.GetAllProject)
 			api.POST("/project", d.Project.CreateProject)
+			api.GET("/project/:project_id", d.Project.GetProject)
+			api.PUT("/project/:project_id", d.Project.UpdateProject)
+
+			api.GET("/project/:project_id/tasks", d.Task.GetTasks)
+			api.POST("/project/:project_id/tasks", d.Task.CreateTask)
 
 			api.GET("/canvas/:project_id", d.Canvas.GetCanvas)
 		}

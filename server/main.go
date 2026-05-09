@@ -58,9 +58,12 @@ func main() {
 func SetupApp(db *config.DB, bkt *config.Bucket, cache *config.Cache) api.Deps{
 	authMiddleware := middleware.NewAuthDB(db)
 
+	bucketRepo := database.NewBucketRepo(bkt.Client)
+	bucketService := services.NewBucketService(bucketRepo)
+
 	userRepo := database.NewUserRepo(db)
 	userService := services.NewUserService(userRepo)
-	userHandler := handlers.NewUserHandler(userService)
+	userHandler := handlers.NewUserHandler(userService, bucketService)
 
 	canvasRepo := database.NewCanvasRepo(db, cache)
 	canvasService := services.NewCanvasService(canvasRepo)
@@ -68,10 +71,14 @@ func SetupApp(db *config.DB, bkt *config.Bucket, cache *config.Cache) api.Deps{
 
 	projectRepo := database.NewProjectRepo(db)
 	projectService := services.NewProjectService(&projectRepo)
-	projectHandler := handlers.NewProjectHandler(projectService, canvasService)
+	projectHandler := handlers.NewProjectHandler(projectService, canvasService, bucketService)
 
 	wsManager := websocket.NewWsManager(cache.Client, canvasRepo)
 	wsHandler := websocket.NewCanvasHandler(wsManager)
+
+	taskRepo := database.NewTaskRepo(db)
+	taskService := services.NewTaskService(taskRepo, &projectRepo)
+	taskHandler := handlers.NewTaskHandler(taskService)
 
 
 
@@ -79,6 +86,7 @@ func SetupApp(db *config.DB, bkt *config.Bucket, cache *config.Cache) api.Deps{
 		WS: wsHandler,
 		Canvas: canvasHandler,
 		Project: projectHandler,
+		Task: taskHandler,
 		User: userHandler,
 		AuthMiddleware: authMiddleware,
 	}

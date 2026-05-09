@@ -20,6 +20,7 @@ type Project struct {
 	Updated_At time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 	ProjectUsers []ProjectUser `gorm:"foreignKey:ProjectID" json:"project_users"`
 	Canvas *Canvas `gorm:"foreignKey:ProjectID" json:"canvas,omitempty"`
+	Tasks []Task `gorm:"foreignKey:ProjectID" json:"tasks,omitempty"`
 }
 
 type ProjectUser struct {
