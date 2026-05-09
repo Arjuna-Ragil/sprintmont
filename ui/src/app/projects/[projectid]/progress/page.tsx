@@ -4,7 +4,6 @@ import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Plus, X, ListTodo, Circle, CheckCircle2, Clock } from "lucide-react";
-import { API_BASE_URL } from "@/lib/config";
 
 type Task = {
   id: string;

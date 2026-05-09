@@ -5,7 +5,6 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowLeft, LayoutTemplate, CheckSquare, Send, Info } from "lucide-react";
-import { API_BASE_URL } from "@/lib/config";
 
 export default function ProjectLayout({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();

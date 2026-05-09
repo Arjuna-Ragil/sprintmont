@@ -4,7 +4,6 @@ import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ExternalLink, Code, MonitorPlay, Presentation, Pencil, X } from "lucide-react";
-import { API_BASE_URL } from "@/lib/config";
 
 type ProjectData = {
   id: string;
